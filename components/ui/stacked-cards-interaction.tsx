@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useInView } from "framer-motion";
 
 import { Link } from "@/i18n/routing";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 const Card = ({
   className,
@@ -81,6 +81,8 @@ const StackedCardsInteraction = ({
   rotationAngle?: number;
 }) => {
   const t = useTranslations("Home");
+  const locale = useLocale();
+  const isRTL = locale === "ar";
   const [cardsOrder, setCardsOrder] = useState<CardData[]>(cards);
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
@@ -136,14 +138,15 @@ const StackedCardsInteraction = ({
         initial={{ opacity: 0, scale: 0.9 }}
         animate={isInView ? { opacity: 1, scale: 1 } : {}}
         transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-        className="flex items-center justify-center gap-4 md:gap-8 w-full max-w-5xl"
+        className="w-full flex justify-center overflow-visible"
       >
+        <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-8 w-full max-w-5xl scale-[0.75] min-[400px]:scale-[0.85] sm:scale-100 origin-center px-4">
         <button
           onClick={handlePrev}
           className="z-50 p-3 rounded-full bg-white shadow-lg hover:shadow-xl hover:bg-gray-50 border border-gray-100 transition-all active:scale-95 text-gray-800 focus:outline-none focus:ring-2 focus:ring-violet-500"
           aria-label="Previous card"
         >
-          <ChevronLeft size={28} />
+          {isRTL ? <ChevronRight size={28} /> : <ChevronLeft size={28} />}
         </button>
 
         <div className="relative w-[350px] md:w-[510px] h-[400px] flex justify-center">
@@ -209,8 +212,9 @@ const StackedCardsInteraction = ({
           className="z-50 p-3 rounded-full bg-white shadow-lg hover:shadow-xl hover:bg-gray-50 border border-gray-100 transition-all active:scale-95 text-gray-800 focus:outline-none focus:ring-2 focus:ring-violet-500"
           aria-label="Next card"
         >
-          <ChevronRight size={28} />
+          {isRTL ? <ChevronLeft size={28} /> : <ChevronRight size={28} />}
         </button>
+        </div>
       </motion.div>
 
     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "@/i18n/routing";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useTranslations, useLocale } from "next-intl";
@@ -13,6 +13,17 @@ const NavBar = () => {
   const locale = useLocale();
   const isRTL = locale === "ar";
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   const navLinks = [
     { name: t("home"), href: "/" },
@@ -38,7 +49,7 @@ const NavBar = () => {
             
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity z-[10001]">
               <div className="w-8 h-8 md:w-10 md:h-10">
-                <img src="/logo.png" alt="Otomax Logo" className="w-full h-full object-contain" />
+                <img src="/otomax_logo.png" alt="Otomax Logo" className="w-full h-full object-contain" />
               </div>
               <span className="text-xl md:text-2xl font-black tracking-tighter">OTOMAX</span>
             </Link>

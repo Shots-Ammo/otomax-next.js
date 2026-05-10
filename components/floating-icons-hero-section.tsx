@@ -180,7 +180,7 @@ const FloatingIconsHero = React.forwardRef<
           {subtitle}
         </h2>
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button asChild size="lg" className="sm:min-w-[200px] px-10 py-7 text-lg font-black bg-violet-600 hover:bg-violet-500 text-white rounded-2xl shadow-xl shadow-violet-200 transition-all hover:scale-105 active:scale-95">
+          <Button asChild size="lg" className="sm:min-w-[200px] px-10 py-7 text-lg font-black bg-zinc-800 hover:bg-zinc-700 text-white rounded-2xl shadow-xl shadow-zinc-200 transition-transform duration-300 hover:scale-105 active:scale-95">
             <Link href={ctaHref as any}>{ctaText}</Link>
           </Button>
         </div>

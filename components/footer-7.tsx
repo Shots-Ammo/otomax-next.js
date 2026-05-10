@@ -32,8 +32,8 @@ import { Link } from "@/i18n/routing";
 export const Footer7 = ({
   logo = {
     url: "https://www.otomax.tech",
-    src: "/logo.png",
-    alt: "logo",
+    src: "/otomax_logo.png",
+    alt: "Otomax Logo",
     title: "otomax.tech",
   },
 }: {

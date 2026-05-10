@@ -924,36 +924,86 @@
     "title": "Privacy Policy",
     "updated": "Last Updated: May 2026",
     "contents": "Contents",
+    "toc": {
+      "s1": "Information We Collect",
+      "s2": "How We Use Your Information",
+      "s3": "Legal Basis for Processing",
+      "s6": "Third-Party Sub-Processors",
+      "s9": "Data Storage & Security",
+      "s10": "Data Retention",
+      "s14": "Contact Us"
+    },
     "s1": {
       "title": "Information We Collect",
-      "desc": "When you interact with Otomax, we collect the following categories of personal data:"
+      "desc": "When you interact with Otomax, we collect the following categories of personal data:",
+      "headers": ["Category", "Examples"],
+      "dataCategories": [
+        { "category": "Contact Information", "data": "Name, email address, phone number, company name" },
+        { "category": "Inquiry Data", "data": "Links to social media pages and website URLs" },
+        { "category": "Chat Conversation Data", "data": "Messages, attachments, and conversation history with our AI chat agent" },
+        { "category": "Knowledge Base Data", "data": "All the data in all formats that are provided by the client for feeding into the AI agents with the intent of integrating into their business" },
+        { "category": "Integrated Data", "data": "Data from the clients existing databases that are integrated with our services." },
+        { "category": "Forms Data", "data": "All the information that is filled in the various forms in our website" },
+        { "category": "Technical Data", "data": "IP address, browser type, device type, operating system, pages visited, timestamps" },
+        { "category": "Usage Data", "data": "How you interact with our website and services, session duration, page views" }
+      ]
     },
     "s2": {
       "title": "How We Use Your Information",
-      "desc": "We use the information we collect for the following purposes:"
+      "desc": "We use the information we collect for the following purposes:",
+      "serviceDelivery": {
+        "title": "Service Delivery:",
+        "desc": "Responding to inquiries and delivering project proposals."
+      },
+      "salesMarketing": {
+        "title": "Sales & Marketing:",
+        "desc": "Following up on leads and sending service announcements."
+      }
     },
     "s3": {
       "title": "Legal Basis",
-      "desc": "Legal basis for processing:"
+      "headers": ["Type of Processing", "Legal Basis"],
+      "legalBasis": [
+        { "processing": "Service Delivery", "basis": "Contractual Obligation" },
+        { "processing": "Marketing & Lead Nurturing", "basis": "Legitimate Interest" },
+        { "processing": "Website Analytics", "basis": "Legitimate Interest" },
+        { "processing": "Security & Fraud Prevention", "basis": "Legitimate Interest" },
+        { "processing": "Compliance with Laws", "basis": "Legal Obligation" }
+      ]
     },
     "s6": {
       "title": "Third-Party Sub-Processors",
-      "desc": "Trusted third-party sub-processors that handle data on our behalf:"
+      "desc": "Trusted third-party sub-processors that handle data on our behalf:",
+      "headers": ["Sub-Processor", "Purpose", "Data Shared", "Privacy Policy"],
+      "subProcessors": [
+        { "name": "OpenAI (ChatGPT)", "purpose": "Powers AI chat agent responses", "data": "Chat conversation content", "policy": "openai.com/privacy" },
+        { "name": "Google (Gemini)", "purpose": "Powers AI chat agent responses", "data": "Chat conversation content", "policy": "policies.google.com/privacy" },
+        { "name": "n8n", "purpose": "Workflow automation", "data": "Contact data, chat data", "policy": "n8n.io/privacy" },
+        { "name": "Chatwoot", "purpose": "Customer communication platform", "data": "Chat history, name", "policy": "chatwoot.com/privacy-policy" },
+        { "name": "Hostinger VPS", "purpose": "Cloud infrastructure hosting", "data": "All stored client data", "policy": "hostinger.com/privacy-policy" },
+        { "name": "Postgress", "purpose": "Database", "data": "Chat conversation, contact, inquiry", "policy": "https://www.postgresql.org/about/policies/privacy/" },
+        { "name": "Google Analytics", "purpose": "Website usage analytics", "data": "Technical and Usage Data", "policy": "policies.google.com/privacy" }
+      ]
     },
     "s9": {
       "title": "Data Storage & Security",
-      "desc": "Your data is stored in a self-hosted PostgreSQL database on a secure VPS provided by Hostinger."
+      "desc": "Your data is stored in a self-hosted PostgreSQL database on a secure VPS provided by Hostinger.",
+      "securityTitle": "Security:",
+      "securityDesc": "All data transmission is encrypted via HTTPS/TLS, and access is restricted to authorized personnel."
     },
     "s10": {
       "title": "Data Retention",
-      "desc": "How long we keep your data:"
+      "headers": ["Data Type", "Retention Period"],
+      "retentionPeriods": [
+        { "dataType": "Contact form submissions", "period": "12 months from last interaction" },
+        { "dataType": "AI chat conversation logs", "period": "12 months from date of conversation" },
+        { "dataType": "Client data (active)", "period": "Duration of relationship + 3 years" },
+        { "dataType": "Email communications", "period": "3 years from last interaction" }
+      ]
     },
     "s14": {
       "title": "Contact Us",
-      "desc": "Questions or Concerns?"
-    },
-    "cta": {
-      "title": "Questions or Concerns?",
+      "questions": "Questions or Concerns?",
       "desc": "For any inquiries relating to this Privacy Policy or your personal data, please reach out to our team."
     }
   },

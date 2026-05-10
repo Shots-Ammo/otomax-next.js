@@ -232,7 +232,10 @@ const OriginalSite = () => {
 
               {/* RIGHT SIDE: iPhone Mockup */}
               <div className="lg:col-span-1 order-2 lg:row-span-2 flex flex-col justify-center items-center lg:justify-start pt-10 lg:pt-0" ref={iphoneSectionRef}>
-                <div className="scale-[0.8] sm:scale-[0.9] md:scale-100 lg:scale-[0.85] origin-center">
+                <div className="relative scale-[0.8] sm:scale-[0.9] md:scale-100 lg:scale-[0.85] origin-center z-10 w-fit">
+                  
+
+
                   <IPhoneMockup model="15-pro" color="#000000" noGradient={true} scale={0.75} animateOnScroll={true} statusBarColor="#000000">
                     <iframe
                       ref={iframeRef}

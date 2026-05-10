@@ -6,19 +6,25 @@
         botName: "Max",
         botSubtitle: "Your new Smart Assistant",
         greeting1: "Hello there ! \n I am max, your buiness's new smart assistant",
-        greeting2: "Ask me anything!",
+        greeting2: "Try me now. Ask me anything!",
         placeholder: "Type your message here...",
         poweredBy: "Powered by",
         errorMsg: "⚠️ Couldn't reach the server. Please try again.",
+        consentPart1: "By chatting with our chat agents you consent to the monitoring and recording of the chat and the processing of your personal data in accordance with our ",
+        consentLink: "Privacy Policy",
+        consentPart2: ".",
       },
       ar: {
         botName: "ماكس",
         botSubtitle: "مساعدك الذكي",
         greeting1: "مرحباً! \n أنا ماكس، مساعدك الذكي الجديد",
-        greeting2: "اسألني عن أي شيء!",
+        greeting2: "جربني الآن. اسألني عن أي شيء!",
         placeholder: "اكتب رسالتك هنا...",
         poweredBy: "مشغّل بواسطة",
         errorMsg: "⚠️ تعذّر الوصول إلى الخادم. يرجى المحاولة مجدداً.",
+        consentPart1: "من خلال الدردشة مع وكلائنا، فإنك توافق على مراقبة وتسجيل الدردشة ومعالجة بياناتك الشخصية وفقًا لـ ",
+        consentLink: "سياسة الخصوصية",
+        consentPart2: " الخاصة بنا.",
       },
     },
 
@@ -256,11 +262,34 @@
       align-items: center;
       border-top: 1px solid rgba(0,0,0,0.06);
     }
+    @keyframes otmxSpin {
+      100% { transform: rotate(360deg); }
+    }
+    #otmx-input-wrapper {
+      flex: 1;
+      position: relative;
+      border-radius: 24px;
+      padding: 2px;
+      background: rgba(124, 58, 237, 0.15);
+      overflow: hidden;
+      display: flex;
+    }
+    #otmx-input-gradient {
+      position: absolute;
+      top: -500px;
+      bottom: -500px;
+      left: -500px;
+      right: -500px;
+      background: conic-gradient(from 0deg, transparent 0 240deg, ${CONFIG.primaryColor} 360deg);
+      animation: otmxSpin 2.5s linear infinite;
+      z-index: 1;
+    }
     #otmx-input {
       flex: 1;
+      position: relative;
       background: #FFFFFF;
-      border: 1px solid rgba(0,0,0,0.08);
-      border-radius: 24px;
+      border: none;
+      border-radius: 22px;
       padding: 12px 18px;
       color: #000;
       outline: none;
@@ -268,10 +297,9 @@
       font-size: 18px;
       resize: none;
       max-height: 120px;
-      transition: border-color 0.2s;
+      z-index: 2;
     }
     #otmx-input::placeholder { color: rgba(0,0,0,0.4); }
-    #otmx-input:focus { border-color: ${CONFIG.primaryColor}; }
 
     #otmx-send {
       width: 44px;
@@ -313,8 +341,16 @@
       </div>
     </div>
     <div id="otmx-messages"></div>
+    <div id="otmx-consent" style="padding: 8px 16px; background: #fff; font-size: 10px; color: #64748b; border-top: 1px solid rgba(0,0,0,0.06); line-height: 1.2; z-index: 10;">
+      ${T.consentPart1}
+      <a href="/${lang}/privacy" target="_blank" rel="noopener noreferrer" style="color: ${CONFIG.primaryColor}; font-weight: 600; text-decoration: none;">${T.consentLink}</a>
+      ${T.consentPart2}
+    </div>
     <div id="otmx-input-area">
-      <textarea id="otmx-input" placeholder="${T.placeholder}" rows="1"></textarea>
+      <div id="otmx-input-wrapper">
+        <div id="otmx-input-gradient"></div>
+        <textarea id="otmx-input" placeholder="${T.placeholder}" rows="1"></textarea>
+      </div>
       <button id="otmx-send" aria-label="Send">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <line x1="22" y1="2" x2="11" y2="13"/>
@@ -331,6 +367,17 @@
   const messagesEl = document.getElementById("otmx-messages");
   const inputEl = document.getElementById("otmx-input");
   const sendBtn = document.getElementById("otmx-send");
+
+  // Blinking cursor logic
+  let showCursor = false;
+  setInterval(() => {
+    if (inputEl.value.length === 0 && document.activeElement !== inputEl) {
+      showCursor = !showCursor;
+      inputEl.placeholder = T.placeholder + (showCursor ? " |" : "");
+    } else {
+      inputEl.placeholder = T.placeholder;
+    }
+  }, 530);
 
   function scrollToBottom() {
     setTimeout(() => {

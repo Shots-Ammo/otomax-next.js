@@ -99,7 +99,7 @@ export default function Page() {
       </section>
 
 
-      {/* Our clients  */}
+      {/* Our clients  
       <section ref={clientsRef} className="w-full min-h-[70vh] flex items-center justify-center py-10 overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: 40, scale: 0.8 }}
@@ -107,7 +107,7 @@ export default function Page() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="container mx-auto px-4 h-full flex flex-col lg:flex-row items-center justify-center gap-10 origin-center"
         >
-          {/* Left half: VIP Client */}
+           Left half: VIP Client 
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={isClientsInView ? { opacity: 1, x: 0 } : {}}
@@ -125,7 +125,7 @@ export default function Page() {
             />
           </motion.div>
 
-          {/* Right half: Next Client */}
+          Right half: Next Client
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={isClientsInView ? { opacity: 1, x: 0 } : {}}
@@ -142,6 +142,7 @@ export default function Page() {
           </motion.div>
         </motion.div>
       </section>
+       */}
 
       {/* Contact form  */}
       <section className="scale-90 origin-top -mt-10">

@@ -25,20 +25,26 @@ const CustomChatIcon = ({ className }: { className?: string }) => (
 const CONFIG = {
   i18n: {
     en: {
-      botName: "Noura",
+      botName: "Nourah",
       botSubtitle: "Otomax AI Assistant",
-      greeting: "Hello! I am Noura. How may I assist you today?",
+      greeting: "Hello! I am Nourah. How may I assist you today?",
       placeholder: "Type your message here...",
       poweredBy: "Powered by",
       errorMsg: "⚠️ Couldn't reach the server. Please try again.",
+      consentPart1: "By chatting with our chat agents you consent to the monitoring and recording of the chat and the processing of your personal data in accordance with our ",
+      consentLink: "Privacy Policy",
+      consentPart2: ".",
     },
     ar: {
-      botName: "نورا",
-      botSubtitle: "مساعد Otomax الذكي",
-      greeting: "مرحباً! معك نورا. كيف يمكنني مساعدتك اليوم؟",
+      botName: "نوره",
+      botSubtitle: "مساعد أوتوماكس الذكي",
+      greeting: "مرحباً! معك نوره. كيف يمكنني مساعدتك اليوم؟",
       placeholder: "اكتب رسالتك هنا...",
       poweredBy: "مشغّل بواسطة",
       errorMsg: "⚠️ تعذّر الوصول إلى الخادم. يرجى المحاولة مجدداً.",
+      consentPart1: "من خلال الدردشة مع وكلائنا، فإنك توافق على مراقبة وتسجيل الدردشة ومعالجة بياناتك الشخصية وفقًا لـ ",
+      consentLink: "سياسة الخصوصية",
+      consentPart2: " الخاصة بنا.",
     },
   },
   avatarImageUrl: "/ui/logo.png",
@@ -389,6 +395,15 @@ export default function Noura() {
                 </div>
               )}
               <div ref={messagesEndRef} />
+            </div>
+
+            {/* Consent Disclaimer */}
+            <div className="px-4 py-2 bg-white text-[10px] text-slate-500 border-t border-slate-100 leading-tight z-10">
+              {T.consentPart1}
+              <a href={`/${lang}/privacy`} target="_blank" rel="noopener noreferrer" className="text-violet-600 hover:underline font-semibold">
+                {T.consentLink}
+              </a>
+              {T.consentPart2}
             </div>
 
             {/* Input Area */}
