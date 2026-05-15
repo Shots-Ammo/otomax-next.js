@@ -188,7 +188,7 @@ export default function Noura() {
         const res = await fetch(
           `${CONFIG.chatwoot.baseUrl}/public/api/v1/inboxes/${inboxIdentifier}/contacts/${contactSourceId}/conversations/${conversationId}/messages`
         );
-        
+
         if (res.status === 404) {
           localStorage.removeItem("noura_cont_id");
           localStorage.removeItem("noura_conv_id");
@@ -393,7 +393,7 @@ export default function Noura() {
         const convData = await convRes.json();
         currentConversationId = convData.id.toString();
         setChatwootConversationId(currentConversationId);
-        localStorage.setItem("noura_conv_id", currentConversationId);
+        localStorage.setItem("noura_conv_id", currentConversationId ?? "");
       }
 
       const msgRes = await fetch(
@@ -458,14 +458,14 @@ export default function Noura() {
           prev.map((m) =>
             m.id === localId
               ? {
-                  ...m,
-                  id: String(sent.id),
-                  createdAt,
-                  timestamp: new Date(createdAt).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  }),
-                }
+                ...m,
+                id: String(sent.id),
+                createdAt,
+                timestamp: new Date(createdAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }),
+              }
               : m
           )
         )
