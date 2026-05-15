@@ -2,19 +2,19 @@
 
 import React from "react";
 import NavBar from "@/components/ui/navBar";
-import { SplineScene } from "@/components/ui/splite";
+
 import { Footer7 } from "@/components/footer-7";
 import { motion } from "framer-motion";
 import { OnboardingModal } from "@/components/onboarding-modal";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { 
-  MessageSquare, 
-  FileText, 
-  Database, 
-  Clock, 
-  Calendar, 
-  Zap 
+import {
+  MessageSquare,
+  FileText,
+  Database,
+  Clock,
+  Calendar,
+  Zap
 } from "lucide-react";
 
 import { useTranslations } from "next-intl";
@@ -47,8 +47,9 @@ export default function AiAgentPage() {
       <NavBar />
       <main className="flex-grow flex flex-col items-center justify-center py-0">
         <div className="w-full flex flex-col items-center">
-          <div className="relative w-full h-[80vh] md:h-[calc(100dvh-70px)] bg-white border-b border-neutral-100 shadow-sm mb-12 flex items-center justify-center">
-            {/* Left Icons */}
+          {/*   <div className="relative w-full h-[80vh] md:h-[calc(100dvh-70px)] bg-white border-b border-neutral-100 shadow-sm mb-12 flex items-center justify-center">
+           
+           Left Icons
             <div className="block">
               {leftIcons.map((item, i) => (
                 <motion.div
@@ -78,7 +79,7 @@ export default function AiAgentPage() {
               ))}
             </div>
 
-            {/* Right Icons */}
+            {/* Right Icons 
             <div className="block">
               {rightIcons.map((item, i) => (
                 <motion.div
@@ -106,24 +107,19 @@ export default function AiAgentPage() {
                   </div>
                 </motion.div>
               ))}
-            </div>
+            </div> 
 
-            <div className="w-full h-full overflow-hidden">
-              <SplineScene 
-                scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-                className="w-full h-full"
-              />
-            </div>
-          </div>
+          </div>*/}
+
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="mb-24 flex justify-center"
+            className="w-full min-h-[60vh] flex flex-col items-center justify-center px-4"
           >
             <motion.div
-              animate={{ 
+              animate={{
                 boxShadow: ["0 0 0px rgba(123, 47, 255, 0)", "0 0 40px rgba(123, 47, 255, 0.6)", "0 0 0px rgba(123, 47, 255, 0)"],
                 scale: [1, 1.05, 1]
               }}
@@ -131,7 +127,7 @@ export default function AiAgentPage() {
               className="px-10 py-5 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-full cursor-default group relative overflow-hidden shadow-2xl shadow-violet-500/20"
             >
               <div className="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition-colors" />
-              <h1 className="text-xl md:text-3xl font-black text-center tracking-tighter text-white whitespace-nowrap relative z-10 drop-shadow-sm">
+              <h1 className="text-xl md:text-4xl font-black text-center tracking-tighter text-white whitespace-nowrap relative z-10 drop-shadow-sm">
                 {t("hero.title")}
               </h1>
             </motion.div>
@@ -146,7 +142,7 @@ export default function AiAgentPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Package 1: WhatsApp Core */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -170,7 +166,7 @@ export default function AiAgentPage() {
                     </li>
                   ))}
                 </ul>
-                <button 
+                <button
                   onClick={() => openOnboarding(t("pricing.plans.whatsapp.name"))}
                   className="w-full py-4 bg-neutral-900 text-white rounded-2xl font-bold hover:bg-violet-600 transition-colors"
                 >
@@ -179,7 +175,7 @@ export default function AiAgentPage() {
               </motion.div>
 
               {/* Package 2: WhatsApp + Website */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -207,7 +203,7 @@ export default function AiAgentPage() {
                     </li>
                   ))}
                 </ul>
-                <button 
+                <button
                   onClick={() => openOnboarding(t("pricing.plans.whatsappWebsite.name"))}
                   className="w-full py-4 bg-violet-600 text-white rounded-2xl font-bold hover:bg-violet-700 transition-colors shadow-lg shadow-violet-200"
                 >
@@ -216,7 +212,7 @@ export default function AiAgentPage() {
               </motion.div>
 
               {/* Package 3: Full Suite */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -241,7 +237,7 @@ export default function AiAgentPage() {
                     </li>
                   ))}
                 </ul>
-                <button 
+                <button
                   onClick={() => openOnboarding(t("pricing.plans.fullSuite.name"))}
                   className="w-full py-4 bg-neutral-900 text-white rounded-2xl font-bold hover:bg-violet-600 transition-colors"
                 >
@@ -253,9 +249,9 @@ export default function AiAgentPage() {
         </div>
       </main>
       <Footer7 />
-      <OnboardingModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <OnboardingModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         planName={selectedPlan}
       />
     </div>

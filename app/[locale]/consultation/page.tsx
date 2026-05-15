@@ -6,6 +6,7 @@ import { Footer7 } from "@/components/footer-7";
 import Noura from "@/components/Noura";
 import { ConsultationOnboardingModal } from "@/components/consultation-onboarding-modal";
 import { motion, useInView } from "framer-motion";
+import RadarOrbitalTimeline, { type TimelineItem } from "@/components/RadarOrbitalTimeline";
 import {
   Map,
   Cpu,
@@ -20,6 +21,11 @@ import {
   Users,
   TrendingUp,
   MessageSquare,
+  Lock,
+  LineChart,
+  Settings,
+  Bell,
+  Star,
 } from "lucide-react";
 
 /* ── Helpers ──────────────────────────────────────────────── */
@@ -212,43 +218,127 @@ export default function ConsultationPage() {
     icon: statIcons[i],
   }));
 
+  const timelineData: TimelineItem[] = [
+    {
+      id: 1,
+      title: "Platform Launch",
+      date: "Jan 2024",
+      content: "Initial release of the core platform with essential SaaS features and onboarding flow.",
+      category: "Milestone",
+      icon: Rocket,
+      relatedIds: [2, 3],
+      status: "completed",
+      energy: 100,
+    },
+    {
+      id: 2,
+      title: "Auth & Security",
+      date: "Feb 2024",
+      content: "Rolled out multi-factor authentication, SSO support, and role-based access control.",
+      category: "Security",
+      icon: Lock,
+      relatedIds: [1, 4],
+      status: "completed",
+      energy: 90,
+    },
+    {
+      id: 3,
+      title: "Database Scaling",
+      date: "Mar 2024",
+      content: "Migrated to distributed database architecture to support 10x user growth.",
+      category: "Infrastructure",
+      icon: Database,
+      relatedIds: [1, 5],
+      status: "completed",
+      energy: 85,
+    },
+    {
+      id: 4,
+      title: "Analytics Dashboard",
+      date: "Apr 2024",
+      content: "Launched real-time analytics with custom reporting and data export capabilities.",
+      category: "Product",
+      icon: LineChart,
+      relatedIds: [2, 6],
+      status: "completed",
+      energy: 78,
+    },
+    {
+      id: 5,
+      title: "Team Collaboration",
+      date: "May 2024",
+      content: "Introduced workspaces, shared dashboards, and team permission management.",
+      category: "Product",
+      icon: Users,
+      relatedIds: [3, 7],
+      status: "in-progress",
+      energy: 65,
+    },
+    {
+      id: 6,
+      title: "API & Integrations",
+      date: "Jun 2024",
+      content: "Public REST API launched with 50+ third-party integrations via webhooks.",
+      category: "Platform",
+      icon: Settings,
+      relatedIds: [4, 8],
+      status: "in-progress",
+      energy: 55,
+    },
+    {
+      id: 7,
+      title: "Smart Notifications",
+      date: "Jul 2024",
+      content: "AI-powered alerts and notification rules based on user behavior and thresholds.",
+      category: "AI",
+      icon: Bell,
+      relatedIds: [5, 8],
+      status: "pending",
+      energy: 40,
+    },
+    {
+      id: 8,
+      title: "Enterprise Tier",
+      date: "Aug 2024",
+      content: "Dedicated infrastructure, SLA guarantees, and white-labeling for enterprise clients.",
+      category: "Business",
+      icon: Star,
+      relatedIds: [6, 7],
+      status: "pending",
+      energy: 30,
+    },
+  ];
+
   return (
     <main className="min-h-screen flex flex-col bg-white overflow-hidden">
       <NavBar />
 
-      {/* ─── Hero ───────────────────────────────────────────── */}
-      <section className="relative pt-24 md:pt-36 pb-20 md:pb-28 px-6">
-        <div className="container mx-auto max-w-5xl text-center">
+      {/* ─── Hero with Radar ─────────────────────────────────── */}
+      <section className="relative h-screen flex flex-col items-center justify-center pt-20 overflow-hidden bg-white">
+        
+        {/* Radar Background scaled down */}
+        <div className="absolute inset-0 z-10 flex items-center justify-center scale-75 md:scale-90 transition-transform duration-700">
+          <RadarOrbitalTimeline timelineData={timelineData} />
+        </div>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="text-xs md:text-sm font-black text-[#7B2FFF] uppercase tracking-[0.2em] mb-6"
-          >
-            {t("hero.tagline")}
-          </motion.p>
+        {/* Content Bubble for Hero Text */}
+        {/* Content Bubble for Hero Text */}
+        <div className="container mx-auto max-w-5xl text-center relative z-20 px-6 flex flex-col items-center">
+          {/* Title with Glass */}
+          <div className="p-6 md:p-8 rounded-[2rem] bg-white/40 backdrop-blur-md border border-white/30 shadow-2xl shadow-violet-500/5 w-fit mb-10">
+            <motion.h1
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.7 }}
+              className="text-4xl sm:text-5xl md:text-5xl font-black text-slate-900 leading-[1.1] tracking-tighter"
+            >
+              {t("hero.title1")}
+              <br className="hidden md:block" />
+              <span className="text-[#7B2FFF]">{t("hero.title2")}</span>
+            </motion.h1>
+          </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.7 }}
-            className="text-4xl sm:text-5xl md:text-7xl font-black text-slate-900 mb-6 leading-[1.1] tracking-tighter"
-          >
-            {t("hero.title1")}
-            <br className="hidden md:block" />
-            <span className="text-[#7B2FFF]">{t("hero.title2")}</span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.25, duration: 0.6 }}
-            className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto mb-10 leading-relaxed font-medium"
-          >
-            {t("hero.desc")}
-          </motion.p>
-
+          {/* Standalone Button */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -257,7 +347,7 @@ export default function ConsultationPage() {
           >
             <button
               onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center gap-2 px-8 py-4 bg-[#7B2FFF] text-white rounded-full font-bold shadow-lg shadow-violet-200 hover:scale-105 transition-transform"
+              className="inline-flex items-center gap-2 px-10 py-5 bg-[#7B2FFF] text-white rounded-full font-bold shadow-xl shadow-violet-500/20 hover:scale-105 transition-transform text-lg"
             >
               {t("hero.button")}
             </button>

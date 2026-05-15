@@ -91,48 +91,26 @@ export default function PartnershipsPage() {
                     >
                         {/* Per Client Commission */}
                         <motion.div variants={fadeIn} className="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 relative group overflow-hidden text-start">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -mr-10 -mt-10 group-hover:scale-110 transition-transform" />
-                            <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-6 relative z-10">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-violet-50 rounded-bl-full -mr-10 -mt-10 group-hover:scale-110 transition-transform" />
+                            <div className="w-14 h-14 bg-violet-600 rounded-2xl flex items-center justify-center text-slate-50 mb-6 relative z-10">
                                 <DollarSign size={28} />
                             </div>
                             <h3 className="text-2xl font-bold text-slate-900 mb-4">{t("models.perClient.title")}</h3>
-                            <p className="text-slate-600 mb-6">
+                            <p className="text-slate-600">
                                 {t("models.perClient.desc")}
                             </p>
-                            <ul className="space-y-3 mb-8">
-                                {t.raw("models.perClient.items").map((item: string, i: number) => (
-                                    <li key={i} className="flex items-center gap-3 text-slate-700 font-medium text-sm">
-                                        <CheckCircle2 size={16} className="text-blue-500" />
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                            <div className="pt-6 border-t border-slate-50">
-                                <span className="text-sm text-slate-400 font-medium">{t("models.perClient.ideal")}</span>
-                            </div>
                         </motion.div>
 
                         {/* Monthly Recurring Income */}
                         <motion.div variants={fadeIn} className="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 relative group overflow-hidden text-start">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-violet-50 rounded-bl-full -mr-10 -mt-10 group-hover:scale-110 transition-transform" />
-                            <div className="w-14 h-14 bg-violet-100 rounded-2xl flex items-center justify-center text-violet-600 mb-6 relative z-10">
+                            <div className="w-14 h-14 bg-violet-600 rounded-2xl flex items-center justify-center text-slate-50 mb-6 relative z-10">
                                 <TrendingUp size={28} />
                             </div>
                             <h3 className="text-2xl font-bold text-slate-900 mb-4">{t("models.recurring.title")}</h3>
-                            <p className="text-slate-600 mb-6">
+                            <p className="text-slate-600">
                                 {t("models.recurring.desc")}
                             </p>
-                            <ul className="space-y-3 mb-8">
-                                {t.raw("models.recurring.items").map((item: string, i: number) => (
-                                    <li key={i} className="flex items-center gap-3 text-slate-700 font-medium text-sm">
-                                        <CheckCircle2 size={16} className="text-[#7B2FFF]" />
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                            <div className="pt-6 border-t border-slate-50">
-                                <span className="text-sm text-slate-400 font-medium">{t("models.recurring.ideal")}</span>
-                            </div>
                         </motion.div>
                     </motion.div>
                 </div>

@@ -2,7 +2,9 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Mail, CreditCard, AlertCircle, ChevronRight } from "lucide-react";
+import { X, Mail, CreditCard, AlertCircle, ChevronRight, Shield } from "lucide-react";
+import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 
 interface CrmModalProps {
   isOpen: boolean;
@@ -10,6 +12,7 @@ interface CrmModalProps {
 }
 
 export function CrmOnboardingModal({ isOpen, onClose }: CrmModalProps) {
+  const t = useTranslations("Onboarding");
   const [email, setEmail] = useState("");
   const [clientId, setClientId] = useState("");
   const [error, setError] = useState(false);
@@ -157,6 +160,19 @@ export function CrmOnboardingModal({ isOpen, onClose }: CrmModalProps) {
               Verify & Continue
             </button>
           </form>
+
+          {/* Privacy Footer */}
+          <div className="mt-8 pt-6 border-t border-neutral-100">
+            <div className="flex items-center gap-1.5 text-[10px] text-neutral-400 font-medium justify-center">
+              <Shield size={12} className="text-violet-400" />
+              <span>
+                {t("common.privacy")}{" "}
+                <Link href="/privacy" className="text-[#7B2FFF] hover:underline">
+                  {t("common.privacyLink")}
+                </Link>
+              </span>
+            </div>
+          </div>
         </div>
       </motion.div>
     </div>

@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations, useLocale } from "next-intl";
+import { Link } from "@/i18n/routing";
 
 const countries = [
   { name: "Saudi Arabia", code: "+966", flag: "🇸🇦" },
@@ -292,9 +293,9 @@ export function AssessmentOnboardingModal({ isOpen, onClose }: AssessmentOnboard
                   <Shield size={12} className="text-violet-400" />
                   <span>
                     {t("common.privacy")}{" "}
-                    <a href="/privacy-policy" className="text-[#7B2FFF] hover:underline">
+                    <Link href="/privacy" className="text-[#7B2FFF] hover:underline">
                       {t("common.privacyLink")}
-                    </a>
+                    </Link>
                   </span>
                 </div>
 

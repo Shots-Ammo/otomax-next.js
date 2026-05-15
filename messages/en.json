@@ -13,7 +13,7 @@
       "min": "min",
       "step": "Step {step} of {total}",
       "optional": "Optional",
-      "privacy": "We respect your privacy - see our",
+      "privacy": "We care about your data, review our",
       "privacyLink": "Privacy Policy",
       "placeholders": {
         "fullName": "Your full name",
@@ -73,14 +73,12 @@
       "badge": "Partnership Program",
       "titles": [
         "",
-        "Choose Your Model",
         "Your Presence",
         "Contact Details",
         "Mutual Benefit"
       ],
       "subs": [
         "",
-        "How would you like to partner with us?",
         "Tell us your name and where we can find you.",
         "How should we reach out to you?",
         "How can we grow together?"
@@ -235,7 +233,7 @@
       "message": "What is on your mind?",
       "messagePlaceholder": "Tell us more about your business and what you need...",
       "submit": "Send Your Message",
-      "privacy": "We care about your data check our",
+      "privacy": "We care about your data, review our",
       "privacyLink": "Privacy Policy"
     },
     "success": {
@@ -744,27 +742,27 @@
       "button": "Start Referring Now"
     },
     "models": {
-      "title": "Choose Your Earning Model",
-      "subtitle": "Flexible options tailored to how you want to build your revenue stream.",
+      "title": "What You Get Partnering With Us",
+      "subtitle": "A single, transparent model designed to reward your growth.",
       "perClient": {
         "title": "Per Client Commission",
-        "desc": "Receive a high‑impact, one‑time payment for every successful client referral. Perfect for partners who want immediate returns on high‑value introductions.",
+        "desc": "Recieve a commission for every successful client referral you bring to our ecosystem.",
         "items": [
           "High upfront payment",
           "Transparent tracking",
           "No monthly caps",
           "Instant notification"
         ],
-        "ideal": "Ideal for: High‑ticket website or CRM sales"
+        "ideal": "Ideal for: High-ticket website or CRM sales"
       },
       "recurring": {
-        "title": "Monthly Recurring Income",
-        "desc": "Earn a steady commission for as long as the client stays with us. Build a sustainable long‑term revenue stream.",
+        "title": "Monthly Recurring Revenue",
+        "desc": "Earn a steady, passive commission for as long as your referred client stays active with Otomax.",
         "items": [
           "Passive monthly income",
           "Compound growth",
-          "Retention‑focused",
-          "Long‑term partnership"
+          "Retention-focused",
+          "Long-term partnership"
         ],
         "ideal": "Ideal for: AI Agent and Managed Service referrals"
       }

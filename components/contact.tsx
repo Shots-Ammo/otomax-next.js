@@ -14,6 +14,7 @@ import {
     ChevronDown
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Link } from "@/i18n/routing";
 
 const countries = [
     { name: "Afghanistan", code: "+93", flag: "🇦🇫" },
@@ -452,7 +453,7 @@ const Contact = () => {
                                         </motion.button>
 
                                         <p className="text-center text-xs text-slate-500 font-medium">
-                                            {t("form.privacy")} <a href="/privacy">{t("form.privacyLink")}</a>.</p>
+                                            {t("form.privacy")} <Link href="/privacy">{t("form.privacyLink")}</Link>.</p>
                                     </motion.form>
                                 ) : (
                                     <motion.div

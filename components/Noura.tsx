@@ -23,10 +23,19 @@ const CustomChatIcon = ({ className }: { className?: string }) => (
 
 // ─── CONFIGURATION ────────────────────────────────────────────────────────
 const CONFIG = {
+  // ⚠️ CHATWOOT CONFIGURATION - CHANGE THESE VALUES
+  chatwoot: {
+    baseUrl: "https://chat.kawtheron.tech", // Your Chatwoot instance URL
+    // ⚠️ IMPORTANT: For the Client API, this must be the Inbox "Website Token" / Identifier (a long hash string), NOT the numeric ID like "5".
+    // You can find this in Settings -> Inboxes -> Your Inbox -> Settings -> Configuration.
+    inboxIdentifier: "EiG4ScFiV7mRcXcTvmRM7GwM",
+  },
+  // ⚠️ END CHATWOOT CONFIGURATION
+
   i18n: {
     en: {
       botName: "Nourah",
-      botSubtitle: "Otomax AI Assistant",
+      botSubtitle: "Smart Assistant",
       greeting: "Hello! I am Nourah. How may I assist you today?",
       placeholder: "Type your message here...",
       poweredBy: "Powered by",
@@ -36,8 +45,8 @@ const CONFIG = {
       consentPart2: ".",
     },
     ar: {
-      botName: "نوره",
-      botSubtitle: "مساعد أوتوماكس الذكي",
+      botName: "نورة",
+      botSubtitle: "المساعده الذكية",
       greeting: "مرحباً! معك نوره. كيف يمكنني مساعدتك اليوم؟",
       placeholder: "اكتب رسالتك هنا...",
       poweredBy: "مشغّل بواسطة",
@@ -48,7 +57,7 @@ const CONFIG = {
     },
   },
   avatarImageUrl: "/ui/logo.png",
-  webhookUrl: "https://n8n.srv1587679.hstgr.cloud/webhook/noura",
+  // ⚠️ REMOVED: webhookUrl (no longer needed - we're using Chatwoot API instead)
   theme: {
     primary: "from-[#7B2FFF] via-[#00D4FF] to-[#7B2FFF]",
     botBubble: "bg-white text-slate-800 border border-slate-100 shadow-sm",
@@ -66,29 +75,88 @@ interface Message {
   role: "bot" | "user";
   timestamp: string;
   dir: "ltr" | "rtl";
+  createdAt: number;
+}
+
+function chatwootCreatedAt(raw: number): number {
+  return raw < 1e12 ? raw * 1000 : raw;
+}
+
+function sortMessagesChronologically(msgs: Message[]): Message[] {
+  return [...msgs].sort((a, b) => a.createdAt - b.createdAt);
 }
 
 export default function Noura() {
   const [isOpen, setIsOpen] = useState(false);
   const [isBusy, setIsBusy] = useState(false);
+  /** Agent reply pending — not used for welcome greeting */
   const [isTyping, setIsTyping] = useState(false);
+  const [isGreetingTyping, setIsGreetingTyping] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [lang, setLang] = useState<"en" | "ar">("en");
   const [showBadge, setShowBadge] = useState(false);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [chatwootConversationId, setChatwootConversationId] = useState<string | null>(null);
+
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const sessionIdRef = useRef("");
+  /** Chatwoot `source_id` from contact create — required for all public API paths */
+  const contactSourceIdRef = useRef("");
+  const awaitingReplyRef = useRef(false);
+  const lastUserSendAtRef = useRef(0);
+  const contactEmailRef = useRef("");
+  const contactPhoneRef = useRef("");
+  const contactNameRef = useRef("Website Visitor");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const greetingStartedRef = useRef(false);
+  const lastScrollKeyRef = useRef("");
+
+  const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
+    requestAnimationFrame(() => {
+      const container = messagesContainerRef.current;
+      const anchor = messagesEndRef.current;
+      if (anchor) {
+        anchor.scrollIntoView({ behavior, block: "end" });
+      } else if (container) {
+        container.scrollTop = container.scrollHeight;
+      }
+    });
+  };
 
   const T = CONFIG.i18n[lang];
   const isRTL = lang === "ar";
 
   useEffect(() => {
-    // Session ID initialization
-    sessionIdRef.current = "sess_" + Math.random().toString(36).slice(2, 11);
+    // 1. Session Persistence Logic
+    const savedSessionId = localStorage.getItem("noura_sess_id");
+    const savedSourceId = localStorage.getItem("noura_cont_id");
+    const savedConvId = localStorage.getItem("noura_conv_id");
 
-    // Language detection
+    if (savedSessionId) {
+      sessionIdRef.current = savedSessionId;
+    } else {
+      const newId = "sess_" + Math.random().toString(36).slice(2, 11);
+      sessionIdRef.current = newId;
+      localStorage.setItem("noura_sess_id", newId);
+    }
+
+    // Chatwoot public API paths require source_id (UUID), not our custom identifier
+    if (savedSourceId && !/^\d+$/.test(savedSourceId)) {
+      contactSourceIdRef.current = savedSourceId;
+    } else if (savedSourceId) {
+      localStorage.removeItem("noura_cont_id");
+      localStorage.removeItem("noura_conv_id");
+    }
+
+    if (savedConvId && /^\d+$/.test(savedConvId)) {
+      setChatwootConversationId(savedConvId);
+    } else if (savedConvId) {
+      localStorage.removeItem("noura_conv_id");
+    }
+
+    // 2. Language detection
     const detectLang = () => {
       const htmlLang = (document.documentElement.lang || "").toLowerCase();
       if (htmlLang.startsWith("ar")) return "ar";
@@ -98,31 +166,148 @@ export default function Noura() {
     };
     setLang(detectLang());
 
-    // Notification logic
+    // 3. Notification logic
     const timer = setTimeout(() => {
       if (!isOpen) setShowBadge(true);
     }, 3000);
 
     return () => clearTimeout(timer);
+  }, []); // ⚠️ Only run once on mount to preserve session across toggles
+
+  // ─── POLLING LOGIC: Fetch messages from Chatwoot every 3 seconds ───────────
+  useEffect(() => {
+    if (!isOpen || !chatwootConversationId) return;
+
+    const fetchMessages = async () => {
+      const contactSourceId = contactSourceIdRef.current;
+      if (!chatwootConversationId || !contactSourceId) return;
+      try {
+        const inboxIdentifier = CONFIG.chatwoot.inboxIdentifier;
+        const conversationId = chatwootConversationId;
+
+        const res = await fetch(
+          `${CONFIG.chatwoot.baseUrl}/public/api/v1/inboxes/${inboxIdentifier}/contacts/${contactSourceId}/conversations/${conversationId}/messages`
+        );
+        
+        if (res.status === 404) {
+          localStorage.removeItem("noura_cont_id");
+          localStorage.removeItem("noura_conv_id");
+          contactSourceIdRef.current = "";
+          setChatwootConversationId(null);
+          return;
+        }
+
+        if (!res.ok) return;
+
+        const data = await res.json();
+        const chatwootMessages = Array.isArray(data) ? data : (data.payload || []);
+
+        const formattedMessages: Message[] = chatwootMessages
+          .filter((m: any) => m.message_type !== 2 && m.content != null)
+          .map((m: any) => {
+            const createdAt = chatwootCreatedAt(m.created_at);
+            return {
+              id: String(m.id),
+              role: m.message_type === 1 ? "bot" : "user",
+              text: m.content ?? "",
+              timestamp: new Date(createdAt).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+              dir: /[\u0600-\u06FF]/.test(m.content ?? "") ? "rtl" : "ltr",
+              createdAt,
+            };
+          });
+
+        const sortedApiMessages = sortMessagesChronologically(formattedMessages);
+
+        if (sortedApiMessages.length > 0) {
+          setMessages((prev) => {
+            const greeting = prev.find((m) => m.id === "0");
+            const apiIds = new Set(sortedApiMessages.map((m) => m.id));
+            const apiUserTexts = new Set(
+              sortedApiMessages
+                .filter((m) => m.role === "user")
+                .map((m) => m.text.trim())
+            );
+            // Keep optimistic messages only until Chatwoot echoes the same content
+            const pendingLocal = prev.filter((m) => {
+              if (m.id === "0" || apiIds.has(m.id)) return false;
+              if (!String(m.id).startsWith("local-")) return false;
+              return !apiUserTexts.has(m.text.trim());
+            });
+            const merged = sortMessagesChronologically([
+              ...(greeting ? [greeting] : []),
+              ...sortedApiMessages,
+              ...pendingLocal,
+            ]);
+            return merged;
+          });
+
+          if (awaitingReplyRef.current) {
+            const newBotReply = sortedApiMessages.some(
+              (m) =>
+                m.role === "bot" &&
+                m.createdAt >= lastUserSendAtRef.current - 2000
+            );
+            if (newBotReply) {
+              awaitingReplyRef.current = false;
+              setIsTyping(false);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Polling error:", err);
+      }
+    };
+
+    fetchMessages(); // Fetch immediately
+    const interval = setInterval(fetchMessages, 2000); // Then every 2 seconds
+    return () => clearInterval(interval);
+  }, [isOpen, chatwootConversationId]);
+
+  // Scroll to bottom when chat opens
+  useEffect(() => {
+    if (!isOpen) {
+      lastScrollKeyRef.current = "";
+      return;
+    }
+    lastScrollKeyRef.current = "";
+    const timer = setTimeout(() => scrollToBottom("instant"), 120);
+    return () => clearTimeout(timer);
   }, [isOpen]);
 
+  // Scroll when messages grow or typing state changes (not on every poll tick)
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages, isTyping]);
+    if (!isOpen) return;
+    const lastId = messages[messages.length - 1]?.id ?? "";
+    const scrollKey = `${messages.length}:${lastId}:${isTyping}:${isGreetingTyping}`;
+    if (scrollKey === lastScrollKeyRef.current) return;
+    lastScrollKeyRef.current = scrollKey;
+
+    const behavior =
+      messages.length <= 1 && !chatwootConversationId ? "instant" : "smooth";
+    const timer = setTimeout(() => scrollToBottom(behavior), 50);
+    return () => clearTimeout(timer);
+  }, [isOpen, messages, isTyping, isGreetingTyping, chatwootConversationId]);
+
+  // Welcome greeting only for new visitors (no Chatwoot conversation yet)
+  useEffect(() => {
+    if (!isOpen || chatwootConversationId || greetingStartedRef.current) return;
+    if (messages.length > 0) return;
+
+    greetingStartedRef.current = true;
+    const timer = setTimeout(() => {
+      sendBotGreeting();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [isOpen, chatwootConversationId, messages.length]);
 
   useEffect(() => {
-    if (isOpen && messages.length === 0) {
-      const timer = setTimeout(() => {
-        sendBotGreeting();
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-    if (isOpen && !('ontouchstart' in window)) {
+    if (isOpen && !("ontouchstart" in window)) {
       setTimeout(() => inputRef.current?.focus(), 400);
     }
-  }, [isOpen, messages.length]);
+  }, [isOpen]);
 
   const detectTextDir = (text: string): "ltr" | "rtl" => {
     const rtlChars = (text.match(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/g) || []).length;
@@ -135,17 +320,108 @@ export default function Noura() {
   };
 
   const sendBotGreeting = async () => {
-    setIsTyping(true);
-    await new Promise(r => setTimeout(r, 1000));
-    setIsTyping(false);
+    setIsGreetingTyping(true);
+    await new Promise((r) => setTimeout(r, 1000));
+    setIsGreetingTyping(false);
     const newMsg: Message = {
-      id: Date.now().toString(),
+      id: "0",
       text: T.greeting,
       role: "bot",
       timestamp: getTime(),
-      dir: detectTextDir(T.greeting)
+      dir: detectTextDir(T.greeting),
+      createdAt: 0,
     };
     setMessages([newMsg]);
+  };
+  const ensureChatwootContact = async (inboxIdentifier: string): Promise<string> => {
+    const sessionIdentifier = sessionIdRef.current;
+    if (!sessionIdentifier) throw new Error("No session ID found");
+
+    if (contactSourceIdRef.current) {
+      const existing = await fetch(
+        `${CONFIG.chatwoot.baseUrl}/public/api/v1/inboxes/${inboxIdentifier}/contacts/${contactSourceIdRef.current}`,
+        { method: "GET" }
+      );
+      if (existing.ok) return contactSourceIdRef.current;
+      contactSourceIdRef.current = "";
+      localStorage.removeItem("noura_cont_id");
+    }
+
+    const createRes = await fetch(
+      `${CONFIG.chatwoot.baseUrl}/public/api/v1/inboxes/${inboxIdentifier}/contacts`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          identifier: sessionIdentifier,
+          email: contactEmailRef.current || undefined,
+          name: contactNameRef.current,
+        }),
+      }
+    );
+    if (!createRes.ok) {
+      throw new Error(`Failed to create contact: ${createRes.status}`);
+    }
+
+    const contactData = await createRes.json();
+    const sourceId = contactData.source_id as string;
+    if (!sourceId) throw new Error("Chatwoot did not return source_id");
+
+    contactSourceIdRef.current = sourceId;
+    localStorage.setItem("noura_cont_id", sourceId);
+    return sourceId;
+  };
+
+  const sendMessageToChatwoot = async (
+    userMessage: string
+  ): Promise<{ id: number; created_at: number }> => {
+    try {
+      const inboxIdentifier = CONFIG.chatwoot.inboxIdentifier;
+      let currentConversationId = chatwootConversationId;
+
+      const contactSourceId = await ensureChatwootContact(inboxIdentifier);
+
+      if (!currentConversationId) {
+        const convRes = await fetch(
+          `${CONFIG.chatwoot.baseUrl}/public/api/v1/inboxes/${inboxIdentifier}/contacts/${contactSourceId}/conversations`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        if (!convRes.ok) throw new Error(`Failed to create conversation: ${convRes.status}`);
+        const convData = await convRes.json();
+        currentConversationId = convData.id.toString();
+        setChatwootConversationId(currentConversationId);
+        localStorage.setItem("noura_conv_id", currentConversationId);
+      }
+
+      const msgRes = await fetch(
+        `${CONFIG.chatwoot.baseUrl}/public/api/v1/inboxes/${inboxIdentifier}/contacts/${contactSourceId}/conversations/${currentConversationId}/messages`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: userMessage }),
+        }
+      );
+
+      if (!msgRes.ok) {
+        localStorage.removeItem("noura_cont_id");
+        localStorage.removeItem("noura_conv_id");
+        contactSourceIdRef.current = "";
+        setChatwootConversationId(null);
+        throw new Error(`Failed to send message: ${msgRes.status}`);
+      }
+
+      return msgRes.json();
+    } catch (error) {
+      console.error("Error sending to Chatwoot:", error);
+      localStorage.removeItem("noura_cont_id");
+      localStorage.removeItem("noura_conv_id");
+      contactSourceIdRef.current = "";
+      setChatwootConversationId(null);
+      throw error;
+    }
   };
 
   const handleSendMessage = async () => {
@@ -155,72 +431,59 @@ export default function Noura() {
     setInputValue("");
     if (inputRef.current) inputRef.current.style.height = "auto";
 
+    const now = Date.now();
     const userMsg: Message = {
-      id: Date.now().toString(),
+      id: `local-${now}`,
       text,
       role: "user",
       timestamp: getTime(),
-      dir: detectTextDir(text)
+      dir: detectTextDir(text),
+      createdAt: now,
     };
 
-    setMessages(prev => [...prev, userMsg]);
+    lastUserSendAtRef.current = now;
+    awaitingReplyRef.current = true;
+    setMessages((prev) => sortMessagesChronologically([...prev, userMsg]));
     setIsBusy(true);
-    setIsTyping(true);
+    setIsTyping(true); // awaiting agent reply only — not greeting
+    scrollToBottom("smooth");
+
+    const localId = userMsg.id;
 
     try {
-      const res = await fetch(CONFIG.webhookUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: text,
-          sessionId: sessionIdRef.current,
-          lang
-        }),
-      });
-      const data = await res.json();
-
+      const sent = await sendMessageToChatwoot(text);
+      const createdAt = chatwootCreatedAt(sent.created_at);
+      setMessages((prev) =>
+        sortMessagesChronologically(
+          prev.map((m) =>
+            m.id === localId
+              ? {
+                  ...m,
+                  id: String(sent.id),
+                  createdAt,
+                  timestamp: new Date(createdAt).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }),
+                }
+              : m
+          )
+        )
+      );
+    } catch (error) {
+      console.error("Chat error:", error);
+      awaitingReplyRef.current = false;
       setIsTyping(false);
-
-      if (data.replies && Array.isArray(data.replies)) {
-        for (let i = 0; i < data.replies.length; i++) {
-          if (i > 0) {
-            await new Promise(r => setTimeout(r, 500));
-            setIsTyping(true);
-            const delays = [1500, 2000, 2500];
-            const randomDelay = delays[Math.floor(Math.random() * delays.length)];
-            await new Promise(r => setTimeout(r, randomDelay));
-            setIsTyping(false);
-          }
-          const botMsg: Message = {
-            id: Date.now().toString() + i,
-            text: data.replies[i],
-            role: "bot",
-            timestamp: getTime(),
-            dir: detectTextDir(data.replies[i])
-          };
-          setMessages(prev => [...prev, botMsg]);
-        }
-      } else {
-        const reply = data.output || data.reply || T.errorMsg;
-        const botMsg: Message = {
-          id: Date.now().toString() + "_bot",
-          text: reply,
-          role: "bot",
-          timestamp: getTime(),
-          dir: detectTextDir(reply)
-        };
-        setMessages(prev => [...prev, botMsg]);
-      }
-    } catch (e) {
-      setIsTyping(false);
+      const errAt = Date.now();
       const errorMsg: Message = {
-        id: Date.now().toString() + "_err",
+        id: `err-${errAt}`,
         text: T.errorMsg,
         role: "bot",
         timestamp: getTime(),
-        dir: detectTextDir(T.errorMsg)
+        dir: detectTextDir(T.errorMsg),
+        createdAt: errAt,
       };
-      setMessages(prev => [...prev, errorMsg]);
+      setMessages((prev) => sortMessagesChronologically([...prev, errorMsg]));
     } finally {
       setIsBusy(false);
     }
@@ -322,6 +585,33 @@ export default function Noura() {
         )}
       </motion.button>
 
+      {/* Identifying Title (Floating Label) */}
+      <AnimatePresence>
+        {!isOpen && showBadge && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            className={cn(
+              "absolute bottom-5 right-20 flex items-center gap-2 pointer-events-none",
+              isRTL && "flex-row-reverse"
+            )}
+          >
+            <div className="bg-white/95 backdrop-blur-md border border-violet-100 px-4 py-2 rounded-2xl shadow-xl flex items-center gap-3 overflow-hidden">
+              <div className={cn("flex flex-col min-w-[120px]", isRTL ? "items-end" : "items-start")}>
+                <span className="text-[10px] font-bold text-violet-600 uppercase tracking-wider">
+                  {T.botName}
+                </span>
+                <span className="text-[13px] font-medium text-slate-800 whitespace-nowrap">
+                  {T.botSubtitle}
+                </span>
+              </div>
+              <div className="w-1 h-8 bg-violet-600 rounded-full" />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Widget */}
       <AnimatePresence>
         {isOpen && (
@@ -352,7 +642,10 @@ export default function Noura() {
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 scroll-smooth relative">
+            <div
+              ref={messagesContainerRef}
+              className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 relative"
+            >
               <div className="absolute inset-0 bg-[#f8f7ff] pointer-events-none" />
 
               {messages.map((msg) => (
@@ -385,7 +678,7 @@ export default function Noura() {
                 </div>
               ))}
 
-              {isTyping && (
+              {(isGreetingTyping || isTyping) && (
                 <div className="self-start flex flex-col gap-1 z-10">
                   <div className={cn("px-4 py-3 rounded-2xl rounded-bl-none flex gap-1 items-center", CONFIG.theme.botBubble)}>
                     <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:-0.3s]" />
@@ -394,7 +687,7 @@ export default function Noura() {
                   </div>
                 </div>
               )}
-              <div ref={messagesEndRef} />
+              <div ref={messagesEndRef} className="h-0 shrink-0" aria-hidden />
             </div>
 
             {/* Consent Disclaimer */}

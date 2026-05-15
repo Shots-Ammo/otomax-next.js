@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 
 // Custom Icons to avoid lucide-react version issues
 const TikTokIcon = ({ className }: { className?: string }) => (
@@ -61,7 +62,7 @@ export function PartnershipOnboardingModal({ isOpen, onClose }: PartnershipOnboa
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    partnershipType: "",
+    partnershipType: "general",
     name: "",
     instagram: "",
     tiktok: "",
@@ -75,7 +76,7 @@ export function PartnershipOnboardingModal({ isOpen, onClose }: PartnershipOnboa
 
   const t = useTranslations("Onboarding");
 
-  const totalSteps = 4;
+  const totalSteps = 3;
   const progress = (step / totalSteps) * 100;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -175,34 +176,6 @@ export function PartnershipOnboardingModal({ isOpen, onClose }: PartnershipOnboa
 
                 <div className="min-h-[220px] flex items-center">
                   {step === 1 && (
-                    <div className="grid grid-cols-1 gap-4 w-full">
-                      {[
-                        { id: "commission", label: t("partnership.labels.models.commission"), icon: Briefcase },
-                        { id: "recurring", label: t("partnership.labels.models.recurring"), icon: Building2 },
-                      ].map((type) => (
-                        <button
-                          key={type.id}
-                          onClick={() => setFormData(p => ({ ...p, partnershipType: type.id }))}
-                          className={cn(
-                            "flex items-center gap-4 p-5 rounded-[1.5rem] border-2 transition-all text-left",
-                            formData.partnershipType === type.id
-                              ? "bg-violet-600 border-violet-600 text-white shadow-lg shadow-violet-200"
-                              : "bg-neutral-50 border-neutral-100 text-neutral-700 hover:border-violet-200"
-                          )}
-                        >
-                          <div className={cn(
-                            "p-3 rounded-xl",
-                            formData.partnershipType === type.id ? "bg-white/20" : "bg-white shadow-sm"
-                          )}>
-                            <type.icon size={24} className={formData.partnershipType === type.id ? "text-white" : "text-[#7B2FFF]"} />
-                          </div>
-                          <span className="font-bold text-lg">{type.label}</span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-
-                  {step === 2 && (
                     <div className="w-full space-y-4">
                       <div className="relative">
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 text-violet-400 w-5 h-5" />
@@ -254,7 +227,7 @@ export function PartnershipOnboardingModal({ isOpen, onClose }: PartnershipOnboa
                     </div>
                   )}
 
-                  {step === 3 && (
+                  {step === 2 && (
                     <div className="w-full space-y-4">
                       <div className="relative">
                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-violet-400 w-5 h-5" />
@@ -294,7 +267,7 @@ export function PartnershipOnboardingModal({ isOpen, onClose }: PartnershipOnboa
                     </div>
                   )}
 
-                  {step === 4 && (
+                  {step === 3 && (
                     <div className="w-full relative">
                       <MessageSquare className="absolute left-4 top-5 text-violet-400 w-6 h-6" />
                       <textarea
@@ -314,9 +287,9 @@ export function PartnershipOnboardingModal({ isOpen, onClose }: PartnershipOnboa
                   <Shield size={12} className="text-violet-400" />
                   <span>
                     {t("common.privacy")}{" "}
-                    <a href="/privacy-policy" className="text-[#7B2FFF] hover:underline">
+                    <Link href="/privacy" className="text-[#7B2FFF] hover:underline">
                       {t("common.privacyLink")}
-                    </a>
+                    </Link>
                   </span>
                 </div>
 
@@ -333,18 +306,16 @@ export function PartnershipOnboardingModal({ isOpen, onClose }: PartnershipOnboa
                     onClick={step === totalSteps ? handleSubmit : nextStep}
                     disabled={
                       isSubmitting ||
-                      (step === 1 && !formData.partnershipType) ||
-                      (step === 2 && !formData.name) ||
-                      (step === 3 && (!formData.email || !formData.phone)) ||
-                      (step === 4 && formData.proposal.length < 5)
+                      (step === 1 && !formData.name) ||
+                      (step === 2 && (!formData.email || !formData.phone)) ||
+                      (step === 3 && formData.proposal.length < 5)
                     }
                     className={cn(
                       "flex-[2] flex items-center justify-center gap-2 py-4 px-8 rounded-2xl font-black transition-all",
                       isSubmitting ||
-                        (step === 1 && !formData.partnershipType) ||
-                        (step === 2 && !formData.name) ||
-                        (step === 3 && (!formData.email || !formData.phone)) ||
-                        (step === 4 && formData.proposal.length < 5)
+                        (step === 1 && !formData.name) ||
+                        (step === 2 && (!formData.email || !formData.phone)) ||
+                        (step === 3 && formData.proposal.length < 5)
                         ? "bg-neutral-100 text-neutral-400"
                         : "bg-[#7B2FFF] text-white hover:bg-[#6824db] shadow-lg shadow-violet-200"
                     )}
