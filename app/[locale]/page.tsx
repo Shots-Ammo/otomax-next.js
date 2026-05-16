@@ -40,13 +40,7 @@ export default function Page() {
       ctaLink: "/websites",
       backgroundImage: "/ui/services_websites.png",
     },
-    {
-      title: t("services.assessment.title"),
-      description: t("services.assessment.description"),
-      ctaText: t("services.assessment.ctaText"),
-      ctaLink: "/assessment",
-      backgroundImage: "/ui/services_assessment.png",
-    },
+
     {
       title: t("services.aiAgent.title"),
       description: t("services.aiAgent.description"),

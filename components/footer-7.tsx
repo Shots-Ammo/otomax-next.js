@@ -52,7 +52,7 @@ export const Footer7 = ({
       links: [
         { name: t("aiAgent"), href: "/ai-agent" },
         { name: t("websites"), href: "/websites" },
-        { name: t("assessment"), href: "/assessment" },
+
         { name: t("crm"), href: "/crm" },
         { name: t("consultation"), href: "/consultation" },
       ],

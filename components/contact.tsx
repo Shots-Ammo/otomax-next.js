@@ -410,7 +410,7 @@ const Contact = () => {
                                                         <option value="">{t("form.servicePlaceholder")}</option>
                                                         <option value="agent">{t("form.services.agent")}</option>
                                                         <option value="crm">{t("form.services.crm")}</option>
-                                                        <option value="assessment">{t("form.services.assessment")}</option>
+
                                                         <option value="website">{t("form.services.website")}</option>
                                                         <option value="partnership">{t("form.services.partnership")}</option>
                                                         <option value="consultation">{t("form.services.consultation")}</option>

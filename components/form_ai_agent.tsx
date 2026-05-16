@@ -287,7 +287,7 @@ const Contact = () => {
                         </h2>
 
                         <p className="text-slate-600 text-lg mb-12 max-w-lg">
-                            Whether you want a free consultation, process assessment, or partnership info — our team is ready to accelerate your journey.
+                            Whether you want a free consultation or partnership info — our team is ready to accelerate your journey.
                         </p>
                     </motion.div>
 
@@ -400,7 +400,7 @@ const Contact = () => {
                                                         <option value="">Choose a service...</option>
                                                         <option value="agent">AI Chat Agent</option>
                                                         <option value="crm">CRM System</option>
-                                                        <option value="assessment">Process Assessment</option>
+
                                                         <option value="website">Website Development</option>
                                                         <option value="partnership">Partnership Program</option>
                                                         <option value="consultation">Free Consultation</option>
