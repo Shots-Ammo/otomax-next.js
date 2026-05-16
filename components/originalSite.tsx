@@ -16,7 +16,8 @@ import {
   Share2,
   Database,
   User,
-  Mail
+  Mail,
+  Eye
 } from "lucide-react"
 
 import { BentoGrid, BentoCard } from '@/components/bento-grid';
@@ -222,7 +223,7 @@ const OriginalSite = () => {
                   <BentoCard
                     title={t("database.title")}
                     span="half"
-                    icon={<Share2 className="w-6 h-6 text-neutral-700 dark:text-neutral-300" />}
+                    icon={<Eye className="w-6 h-6 text-neutral-700 dark:text-neutral-300" />}
                     description={t("database.desc")}
                     className="min-h-[100px] md:min-h-[85px]"
                   />
