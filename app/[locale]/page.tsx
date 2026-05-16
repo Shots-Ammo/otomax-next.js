@@ -27,18 +27,18 @@ export default function Page() {
 
   const servicesItems = [
     {
-      title: t("services.consultation.title"),
-      description: t("services.consultation.description"),
-      ctaText: t("services.consultation.ctaText"),
-      ctaLink: "/consultation",
-      backgroundImage: "/ui/services_consultation.png",
-    },
-    {
       title: t("services.websites.title"),
       description: t("services.websites.description"),
       ctaText: t("services.websites.ctaText"),
       ctaLink: "/websites",
       backgroundImage: "/ui/services_websites.png",
+    },
+    {
+      title: t("services.consultation.title"),
+      description: t("services.consultation.description"),
+      ctaText: t("services.consultation.ctaText"),
+      ctaLink: "/consultation",
+      backgroundImage: "/ui/services_consultation.png",
     },
 
     {
