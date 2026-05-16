@@ -1,6 +1,11 @@
 (function () {
   // ─── CONFIGURATION ────────────────────────────────────────────────────────
   const CONFIG = {
+    chatwoot: {
+      baseUrl: "https://chat.kawtheron.tech",
+      inboxIdentifier: "RP3nRkBsC11LCf3aTGkjgq8u",
+      accountId: "2",
+    },
     i18n: {
       en: {
         botName: "Max",
@@ -10,7 +15,8 @@
         placeholder: "Type your message here...",
         poweredBy: "Powered by",
         errorMsg: "⚠️ Couldn't reach the server. Please try again.",
-        consentPart1: "By chatting with our chat agents you consent to the monitoring and recording of the chat and the processing of your personal data in accordance with our ",
+        consentPart1:
+          "By chatting with our chat agents you consent to the monitoring and recording of the chat and the processing of your personal data in accordance with our ",
         consentLink: "Privacy Policy",
         consentPart2: ".",
       },
@@ -22,14 +28,14 @@
         placeholder: "اكتب رسالتك هنا...",
         poweredBy: "مشغّل بواسطة",
         errorMsg: "⚠️ تعذّر الوصول إلى الخادم. يرجى المحاولة مجدداً.",
-        consentPart1: "من خلال الدردشة مع وكلائنا، فإنك توافق على مراقبة وتسجيل الدردشة ومعالجة بياناتك الشخصية وفقًا لـ ",
+        consentPart1:
+          "من خلال الدردشة مع وكلائنا، فإنك توافق على مراقبة وتسجيل الدردشة ومعالجة بياناتك الشخصية وفقًا لـ ",
         consentLink: "سياسة الخصوصية",
         consentPart2: " الخاصة بنا.",
       },
     },
 
     avatarImageUrl: "/ui/logo.png",
-    webhookUrl: "https://n8n.srv1587679.hstgr.cloud/webhook/max",
 
     primaryColor: "#7c3aed",
     accentColor: "#7c3aed",
@@ -43,11 +49,18 @@
   };
   // ──────────────────────────────────────────────────────────────────────────
 
+  const STORAGE = {
+    session: "max_sess_id",
+    contact: "max_cont_id",
+    conversation: "max_conv_id",
+  };
+
   function detectLang() {
     const htmlLang = (document.documentElement.lang || "").toLowerCase();
     if (htmlLang.startsWith("ar")) return "ar";
     const metaLang = document.querySelector('meta[http-equiv="content-language"]');
-    if (metaLang && (metaLang.getAttribute("content") || "").toLowerCase().startsWith("ar")) return "ar";
+    if (metaLang && (metaLang.getAttribute("content") || "").toLowerCase().startsWith("ar"))
+      return "ar";
     const url = window.location.href.toLowerCase();
     if (/\/ar(\/|$|\?)/.test(url) || /[?&](lang|hl)=ar/.test(url)) return "ar";
     const bLang = (navigator.language || navigator.userLanguage || "en").toLowerCase();
@@ -56,9 +69,14 @@
   }
 
   function detectTextDir(text) {
-    const rtlChars = (text.match(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/g) || []).length;
+    const rtlChars = (text.match(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/g) || [])
+      .length;
     const ltrChars = (text.match(/[A-Za-z]/g) || []).length;
     return rtlChars > ltrChars ? "rtl" : "ltr";
+  }
+
+  function chatwootCreatedAt(raw) {
+    return raw < 1e12 ? raw * 1000 : raw;
   }
 
   const lang = detectLang();
@@ -96,7 +114,7 @@
     #otmx-header {
       background: ${CONFIG.bgHeader};
       padding: 16px 20px;
-      padding-top: 46px; /* Space for the iPhone status bar */
+      padding-top: 46px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -255,7 +273,7 @@
 
     #otmx-input-area {
       padding: 16px 20px;
-      padding-bottom: 38px; /* Safe area for home indicator */
+      padding-bottom: 38px;
       background: ${CONFIG.bgInputArea};
       display: flex;
       gap: 12px;
@@ -324,7 +342,6 @@
   `;
   document.head.appendChild(style);
 
-  // ── Widget ──
   const widget = document.createElement("div");
   widget.id = "otmx-widget";
   widget.innerHTML = `
@@ -361,14 +378,35 @@
 
   document.body.appendChild(widget);
 
-  // ── State ──
+
   let isBusy = false;
-  const sessionId = "sess_" + Math.random().toString(36).slice(2, 11);
+  let awaitingReply = false;
+  let lastUserSendAt = 0;
+  let pollInterval = null;
+  let lastScrollKey = "";
+
+  let sessionId = localStorage.getItem(STORAGE.session);
+  if (!sessionId) {
+    sessionId = "sess_" + Math.random().toString(36).slice(2, 11);
+    localStorage.setItem(STORAGE.session, sessionId);
+  }
+
+  let contactSourceId = localStorage.getItem(STORAGE.contact) || "";
+  let conversationId = localStorage.getItem(STORAGE.conversation) || "";
+
+  if (contactSourceId && /^\d+$/.test(contactSourceId)) {
+    contactSourceId = "";
+    localStorage.removeItem(STORAGE.contact);
+  }
+  if (conversationId && !/^\d+$/.test(conversationId)) {
+    conversationId = "";
+    localStorage.removeItem(STORAGE.conversation);
+  }
+
   const messagesEl = document.getElementById("otmx-messages");
   const inputEl = document.getElementById("otmx-input");
   const sendBtn = document.getElementById("otmx-send");
 
-  // Blinking cursor logic
   let showCursor = false;
   setInterval(() => {
     if (inputEl.value.length === 0 && document.activeElement !== inputEl) {
@@ -379,17 +417,15 @@
     }
   }, 530);
 
-  function scrollToBottom() {
+  function scrollToBottom(instant) {
     setTimeout(() => {
       if (messagesEl) {
         messagesEl.scrollTop = messagesEl.scrollHeight;
       }
-    }, 50);
+    }, instant ? 0 : 50);
   }
 
-  inputEl.addEventListener("focus", () => {
-    scrollToBottom();
-  });
+  inputEl.addEventListener("focus", () => scrollToBottom(true));
 
   let typingEl = null;
 
@@ -413,9 +449,11 @@
     }
   }
 
-  function getTime() {
-    return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  function getTime(ts) {
+    const d = ts ? new Date(ts) : new Date();
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   }
+
   function escapeHtml(s) {
     return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
@@ -431,24 +469,227 @@
     return s.replace(/\n/g, "<br>");
   }
 
-  inputEl.addEventListener("input", function () {
-    this.style.height = "auto";
-    this.style.height = Math.min(this.scrollHeight, 110) + "px";
-    const dir = detectTextDir(this.value);
-    this.style.direction = dir;
-    this.style.textAlign = dir === "rtl" ? "right" : "left";
-  });
+  function getMessageTextFromEl(el) {
+    const content = el.querySelector(".otmx-bubble-content");
+    return content ? content.textContent.trim() : "";
+  }
 
-  function appendMessage(text, role) {
+  function appendMessage(text, role, options) {
+    options = options || {};
+    const id = options.id || "local-" + Date.now();
+    if (document.querySelector('[data-message-id="' + id + '"]')) return null;
+
     const msgDir = detectTextDir(text);
     const el = document.createElement("div");
     el.className = "otmx-msg " + role;
-    const content = role === "bot"
-      ? renderBotText(text)
-      : escapeHtml(text).replace(/\n/g, "<br>");
-    el.innerHTML = `<div class="otmx-bubble" dir="${msgDir}"><span class="otmx-bubble-content">${content}</span><span class="otmx-time">${getTime()}</span></div>`;
+    el.dataset.messageId = id;
+    if (options.greeting) el.dataset.greeting = "true";
+
+    const content =
+      role === "bot" ? renderBotText(text) : escapeHtml(text).replace(/\n/g, "<br>");
+    const timeStr = getTime(options.createdAt);
+
+    el.innerHTML =
+      '<div class="otmx-bubble" dir="' +
+      msgDir +
+      '"><span class="otmx-bubble-content">' +
+      content +
+      '</span><span class="otmx-time">' +
+      timeStr +
+      "</span></div>";
+
     messagesEl.appendChild(el);
-    scrollToBottom();
+    scrollToBottom(options.instantScroll);
+    return el;
+  }
+
+  function removeStaleLocalUserMessages(apiMessages) {
+    const apiUserTexts = new Set(
+      apiMessages
+        .filter(function (m) {
+          return m.message_type === 0;
+        })
+        .map(function (m) {
+          return (m.content || "").trim();
+        })
+    );
+
+    messagesEl.querySelectorAll('[data-message-id^="local-"]').forEach(function (el) {
+      const text = getMessageTextFromEl(el);
+      if (apiUserTexts.has(text)) el.remove();
+    });
+  }
+
+  function sortApiMessages(apiMessages) {
+    return apiMessages
+      .filter(function (m) {
+        return m.message_type !== 2 && m.content != null;
+      })
+      .map(function (m) {
+        return {
+          id: String(m.id),
+          role: m.message_type === 1 ? "bot" : "user",
+          text: m.content || "",
+          createdAt: chatwootCreatedAt(m.created_at),
+        };
+      })
+      .sort(function (a, b) {
+        return a.createdAt - b.createdAt;
+      });
+  }
+
+  async function ensureChatwootContact() {
+    const inbox = CONFIG.chatwoot.inboxIdentifier;
+    const base = CONFIG.chatwoot.baseUrl;
+
+    if (contactSourceId) {
+      const existing = await fetch(
+        base + "/public/api/v1/inboxes/" + inbox + "/contacts/" + contactSourceId,
+        { method: "GET" }
+      );
+      if (existing.ok) return contactSourceId;
+      contactSourceId = "";
+      localStorage.removeItem(STORAGE.contact);
+    }
+
+    const createRes = await fetch(base + "/public/api/v1/inboxes/" + inbox + "/contacts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        identifier: sessionId,
+        name: "Max Demo Visitor",
+      }),
+    });
+
+    if (!createRes.ok) throw new Error("Failed to create contact: " + createRes.status);
+
+    const contactData = await createRes.json();
+    if (!contactData.source_id) throw new Error("Chatwoot did not return source_id");
+
+    contactSourceId = contactData.source_id;
+    localStorage.setItem(STORAGE.contact, contactSourceId);
+    return contactSourceId;
+  }
+
+  async function sendMessageToChatwoot(userMessage) {
+    const inbox = CONFIG.chatwoot.inboxIdentifier;
+    const base = CONFIG.chatwoot.baseUrl;
+
+    await ensureChatwootContact();
+
+    if (!conversationId) {
+      const convRes = await fetch(
+        base +
+          "/public/api/v1/inboxes/" +
+          inbox +
+          "/contacts/" +
+          contactSourceId +
+          "/conversations",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (!convRes.ok) throw new Error("Failed to create conversation: " + convRes.status);
+      const convData = await convRes.json();
+      conversationId = String(convData.id);
+      localStorage.setItem(STORAGE.conversation, conversationId);
+    }
+
+    const msgRes = await fetch(
+      base +
+        "/public/api/v1/inboxes/" +
+        inbox +
+        "/contacts/" +
+        contactSourceId +
+        "/conversations/" +
+        conversationId +
+        "/messages",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: userMessage }),
+      }
+    );
+
+    if (!msgRes.ok) {
+      localStorage.removeItem(STORAGE.contact);
+      localStorage.removeItem(STORAGE.conversation);
+      contactSourceId = "";
+      conversationId = "";
+      throw new Error("Failed to send message: " + msgRes.status);
+    }
+
+    return msgRes.json();
+  }
+
+  async function fetchChatwootMessages() {
+    if (!conversationId || !contactSourceId) return;
+
+    const inbox = CONFIG.chatwoot.inboxIdentifier;
+    const base = CONFIG.chatwoot.baseUrl;
+
+    try {
+      const res = await fetch(
+        base +
+          "/public/api/v1/inboxes/" +
+          inbox +
+          "/contacts/" +
+          contactSourceId +
+          "/conversations/" +
+          conversationId +
+          "/messages"
+      );
+
+      if (res.status === 404) {
+        localStorage.removeItem(STORAGE.contact);
+        localStorage.removeItem(STORAGE.conversation);
+        contactSourceId = "";
+        conversationId = "";
+        return;
+      }
+
+      if (!res.ok) return;
+
+      const data = await res.json();
+      const raw = Array.isArray(data) ? data : data.payload || [];
+      removeStaleLocalUserMessages(raw);
+      const sorted = sortApiMessages(raw);
+
+      let added = false;
+      sorted.forEach(function (msg) {
+        if (document.querySelector('[data-message-id="' + msg.id + '"]')) return;
+        appendMessage(msg.text, msg.role, { id: msg.id, createdAt: msg.createdAt });
+        added = true;
+      });
+
+      if (added) {
+        const last = sorted[sorted.length - 1];
+        const scrollKey = sorted.length + ":" + (last ? last.id : "");
+        if (scrollKey !== lastScrollKey) {
+          lastScrollKey = scrollKey;
+          scrollToBottom();
+        }
+      }
+
+      if (awaitingReply) {
+        const newBotReply = sorted.some(function (m) {
+          return m.role === "bot" && m.createdAt >= lastUserSendAt - 2000;
+        });
+        if (newBotReply) {
+          awaitingReply = false;
+          hideTyping();
+        }
+      }
+    } catch (err) {
+      console.error("Max Chatwoot poll error:", err);
+    }
+  }
+
+  function startPolling() {
+    if (pollInterval) return;
+    fetchChatwootMessages();
+    pollInterval = setInterval(fetchChatwootMessages, 2000);
   }
 
   async function sendMessage() {
@@ -460,93 +701,114 @@
     inputEl.style.direction = isRTL ? "rtl" : "ltr";
     inputEl.style.textAlign = isRTL ? "right" : "left";
 
-    appendMessage(text, "user");
+    const localId = "local-" + Date.now();
+    appendMessage(text, "user", { id: localId });
 
     isBusy = true;
     sendBtn.disabled = true;
+    awaitingReply = true;
+    lastUserSendAt = Date.now();
     showTyping();
 
     try {
-      const res = await fetch(CONFIG.webhookUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, sessionId, lang }),
-      });
-      const data = await res.json();
-
-      if (data.replies && Array.isArray(data.replies)) {
-        for (let i = 0; i < data.replies.length; i++) {
-          if (i > 0) {
-            await new Promise(r => setTimeout(r, 500));
-            showTyping();
-            const delays = [2000, 3000, 4000, 5000];
-            const randomDelay = delays[Math.floor(Math.random() * delays.length)];
-            await new Promise(r => setTimeout(r, randomDelay));
-          }
-          hideTyping();
-          appendMessage(data.replies[i], "bot");
-        }
-      } else {
-        hideTyping();
-        const reply = data.output || data.reply || T.errorMsg;
-        appendMessage(reply, "bot");
-      }
+      const sent = await sendMessageToChatwoot(text);
+      const el = document.querySelector('[data-message-id="' + localId + '"]');
+      if (el) el.dataset.messageId = String(sent.id);
+      startPolling();
     } catch (e) {
+      console.error("Max send error:", e);
+      awaitingReply = false;
       hideTyping();
-      appendMessage(T.errorMsg, "bot");
+      appendMessage(T.errorMsg, "bot", { id: "err-" + Date.now() });
     } finally {
       isBusy = false;
       sendBtn.disabled = false;
-      if (!('ontouchstart' in window)) inputEl.focus();
+      if (!("ontouchstart" in window)) inputEl.focus();
     }
   }
 
-  // Function to start the initial greeting sequence
   function startGreeting() {
     if (window.chatStarted) return;
     window.chatStarted = true;
 
-    setTimeout(() => {
-      showTyping();
-      setTimeout(() => {
-        hideTyping();
-        appendMessage(T.greeting1, "bot");
+    if (conversationId && contactSourceId) {
+      fetchChatwootMessages().then(function () {
+        scrollToBottom(true);
+        startPolling();
+      });
+      if (!("ontouchstart" in window)) setTimeout(function () {
+        inputEl.focus();
+      }, 400);
+      return;
+    }
 
-        setTimeout(() => {
+    setTimeout(function () {
+      showTyping();
+      setTimeout(function () {
+        hideTyping();
+        appendMessage(T.greeting1, "bot", { id: "greet-1", greeting: true });
+
+        setTimeout(function () {
           showTyping();
-          setTimeout(() => {
+          setTimeout(function () {
             hideTyping();
-            appendMessage(T.greeting2, "bot");
-            if (!('ontouchstart' in window)) setTimeout(() => inputEl.focus(), 400);
+            appendMessage(T.greeting2, "bot", { id: "greet-2", greeting: true });
+            if (!("ontouchstart" in window))
+              setTimeout(function () {
+                inputEl.focus();
+              }, 400);
           }, 1500);
         }, 500);
       }, 4000);
     }, 300);
   }
 
-  // Listen for message from parent to start chat
-  window.addEventListener('message', (event) => {
-    if (event.data === 'start-chat') {
+  window.addEventListener("message", function (event) {
+    if (event.data === "start-chat") {
       startGreeting();
     }
   });
 
-  messagesEl.addEventListener("touchmove", (e) => {
-    const atTop = messagesEl.scrollTop === 0;
-    const atBottom = messagesEl.scrollTop + messagesEl.clientHeight >= messagesEl.scrollHeight;
-    const scrollingUp = e.touches[0].clientY > (messagesEl._lastTouchY || 0);
-    const scrollingDown = !scrollingUp;
-    messagesEl._lastTouchY = e.touches[0].clientY;
-    if ((atTop && scrollingUp) || (atBottom && scrollingDown)) e.preventDefault();
-    e.stopPropagation();
-  }, { passive: false });
+  if (conversationId && contactSourceId) {
+    startPolling();
+  }
 
-  messagesEl.addEventListener("touchstart", (e) => {
-    messagesEl._lastTouchY = e.touches[0].clientY;
-  }, { passive: true });
+  messagesEl.addEventListener(
+    "touchmove",
+    function (e) {
+      const atTop = messagesEl.scrollTop === 0;
+      const atBottom =
+        messagesEl.scrollTop + messagesEl.clientHeight >= messagesEl.scrollHeight;
+      const scrollingUp = e.touches[0].clientY > (messagesEl._lastTouchY || 0);
+      const scrollingDown = !scrollingUp;
+      messagesEl._lastTouchY = e.touches[0].clientY;
+      if ((atTop && scrollingUp) || (atBottom && scrollingDown)) e.preventDefault();
+      e.stopPropagation();
+    },
+    { passive: false }
+  );
+
+  messagesEl.addEventListener(
+    "touchstart",
+    function (e) {
+      messagesEl._lastTouchY = e.touches[0].clientY;
+    },
+    { passive: true }
+  );
+
+  inputEl.addEventListener("input", function () {
+    this.style.height = "auto";
+    this.style.height = Math.min(this.scrollHeight, 110) + "px";
+    const dir = detectTextDir(this.value);
+    this.style.direction = dir;
+    this.style.textAlign = dir === "rtl" ? "right" : "left";
+  });
 
   sendBtn.addEventListener("click", sendMessage);
-  inputEl.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  inputEl.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
   });
 })();

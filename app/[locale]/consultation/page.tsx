@@ -315,7 +315,7 @@ export default function ConsultationPage() {
 
       {/* ─── Hero with Radar ─────────────────────────────────── */}
       <section className="relative h-screen flex flex-col items-center justify-center pt-20 overflow-hidden bg-white">
-        
+
         {/* Radar Background scaled down */}
         <div className="absolute inset-0 z-10 flex items-center justify-center scale-75 md:scale-90 transition-transform duration-700">
           <RadarOrbitalTimeline timelineData={timelineData} />
@@ -438,43 +438,6 @@ export default function ConsultationPage() {
               </Section>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ─── Service Pillars ────────────────────────────────── */}
-      <section className="py-24 bg-slate-50">
-        <div className="container mx-auto max-w-6xl px-4">
-          <Section className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              {t("pillars.title")}
-            </h2>
-            <p className="text-slate-500 max-w-2xl mx-auto">
-              {t("pillars.subtitle")}
-            </p>
-          </Section>
-
-          <motion.div
-            variants={stagger}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            className="grid md:grid-cols-3 gap-6"
-          >
-            {pillars.map((pillar, i) => (
-              <motion.div
-                key={i}
-                variants={fadeUp}
-                className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300 group cursor-default text-start"
-              >
-                <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-700 mb-5 group-hover:bg-[#7B2FFF] group-hover:text-white transition-all duration-300">
-                  {pillar.icon}
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-1">{pillar.title}</h3>
-                <p className="text-[#7B2FFF] text-sm font-semibold italic mb-3">{pillar.tagline}</p>
-                <p className="text-slate-500 text-sm leading-relaxed">{pillar.description}</p>
-              </motion.div>
-            ))}
-          </motion.div>
         </div>
       </section>
 
