@@ -592,21 +592,21 @@ export default function Noura() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
-            className={cn(
-              "absolute bottom-5 right-20 flex items-center gap-2 pointer-events-none",
-              isRTL && "flex-row-reverse"
-            )}
+            className="absolute bottom-5 right-20 flex items-center pointer-events-none"
           >
-            <div className="bg-white/95 backdrop-blur-md border border-violet-100 px-4 py-2 rounded-2xl shadow-xl flex items-center gap-3 overflow-hidden">
-              <div className={cn("flex flex-col min-w-[120px]", isRTL ? "items-end" : "items-start")}>
-                <span className="text-[10px] font-bold text-violet-600 uppercase tracking-wider">
+            <div
+              className="bg-white/95 backdrop-blur-md border border-violet-100 px-4 py-2 rounded-2xl shadow-xl flex items-center gap-3 overflow-hidden"
+              style={{ direction: isRTL ? "rtl" : "ltr" }}
+            >
+              <div className="w-1 h-8 bg-violet-600 rounded-full flex-shrink-0" />
+              <div className="flex flex-col items-start">
+                <span className="text-[13px] font-bold text-violet-600 uppercase tracking-wider whitespace-nowrap">
                   {T.botName}
                 </span>
                 <span className="text-[13px] font-medium text-slate-800 whitespace-nowrap">
                   {T.botSubtitle}
                 </span>
               </div>
-              <div className="w-1 h-8 bg-violet-600 rounded-full" />
             </div>
           </motion.div>
         )}
