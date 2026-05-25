@@ -18,8 +18,16 @@ interface ContactProps {
 
 type FormStep = 1 | 2 | 3;
 
+interface MagneticButtonProps {
+  children: React.ReactNode;
+  className?: string;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
+  type?: "button" | "submit" | "reset";
+}
+
 // Magnetic Button Component
-const MagneticButton = ({ children, className, onClick, disabled, type = "button" }: any) => {
+const MagneticButton = ({ children, className, onClick, disabled, type = "button" }: MagneticButtonProps) => {
   const ref = useRef<HTMLButtonElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -339,7 +347,8 @@ export default function Contact({ isArabic }: ContactProps) {
                                     key={srv.id}
                                     onClick={() => setSelectedService(srv.name)}
                                     className={cn(
-                                      "p-5 border text-left rounded-2xl transition-all duration-300 font-heading text-xs uppercase tracking-wider",
+                                      "p-5 border rounded-2xl transition-all duration-300 font-heading text-xs uppercase tracking-wider",
+                                      isArabic ? "text-right" : "text-left",
                                       selectedService === srv.name
                                         ? "border-primary bg-primary text-white shadow-lg shadow-primary/20"
                                         : "border-charcoal/10 bg-cream text-charcoal hover:border-primary/50"
@@ -374,7 +383,8 @@ export default function Contact({ isArabic }: ContactProps) {
                                     key={scl.id}
                                     onClick={() => setProjectScale(scl.name)}
                                     className={cn(
-                                      "p-5 border text-left rounded-2xl transition-all duration-300 font-heading text-xs uppercase tracking-wider",
+                                      "p-5 border rounded-2xl transition-all duration-300 font-heading text-xs uppercase tracking-wider",
+                                      isArabic ? "text-right" : "text-left",
                                       projectScale === scl.name
                                         ? "border-primary bg-primary text-white shadow-lg shadow-primary/20"
                                         : "border-charcoal/10 bg-cream text-charcoal hover:border-primary/50"
@@ -444,7 +454,7 @@ export default function Contact({ isArabic }: ContactProps) {
                           onClick={prevStep}
                           className="flex items-center gap-2 text-charcoal/50 hover:text-charcoal transition-colors font-heading font-bold text-xs tracking-wider uppercase px-4 py-2 z-10"
                         >
-                          <ChevronLeft size={16} />
+                          {isArabic ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
                           {isArabic ? "رجوع" : "Back"}
                         </MagneticButton>
                       ) : (
@@ -463,7 +473,7 @@ export default function Contact({ isArabic }: ContactProps) {
                           )}
                         >
                           {isArabic ? "التالي" : "Next"}
-                          <ChevronRight size={16} />
+                          {isArabic ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
                         </MagneticButton>
                       ) : (
                         <MagneticButton

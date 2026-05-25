@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useParams } from "next/navigation";
 import { Send, X, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -67,13 +68,26 @@ interface Message {
   dir: "ltr" | "rtl";
 }
 
+const detectTextDir = (text: string): "ltr" | "rtl" => {
+  const rtlChars = (text.match(/[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]/g) || []).length;
+  const ltrChars = (text.match(/[A-Za-z]/g) || []).length;
+  return rtlChars > ltrChars ? "rtl" : "ltr";
+};
+
+const getTime = () => {
+  return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+};
+
 export default function Noura() {
+  const params = useParams();
+  const locale = params?.locale as string;
+  const lang: "en" | "ar" = locale === "ar" ? "ar" : "en";
+
   const [isOpen, setIsOpen] = useState(false);
   const [isBusy, setIsBusy] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
-  const [lang, setLang] = useState<"en" | "ar">("en");
   const [showBadge, setShowBadge] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -83,6 +97,20 @@ export default function Noura() {
   const T = CONFIG.i18n[lang];
   const isRTL = lang === "ar";
 
+  const sendBotGreeting = useCallback(async () => {
+    setIsTyping(true);
+    await new Promise(r => setTimeout(r, 1000));
+    setIsTyping(false);
+    const newMsg: Message = {
+      id: Date.now().toString(),
+      text: T.greeting,
+      role: "bot",
+      timestamp: getTime(),
+      dir: detectTextDir(T.greeting)
+    };
+    setMessages([newMsg]);
+  }, [T.greeting]);
+
   useEffect(() => {
     // Persistent Session ID via localStorage
     let sessId = localStorage.getItem("gulf_evento_sess_id");
@@ -91,16 +119,6 @@ export default function Noura() {
       localStorage.setItem("gulf_evento_sess_id", sessId);
     }
     sessionIdRef.current = sessId;
-
-    // Language detection
-    const detectLang = () => {
-      const htmlLang = (document.documentElement.lang || "").toLowerCase();
-      if (htmlLang.startsWith("ar")) return "ar";
-      const bLang = (navigator.language || "").toLowerCase();
-      if (bLang.startsWith("ar")) return "ar";
-      return "en";
-    };
-    setLang(detectLang());
 
     // Notification logic
     const timer = setTimeout(() => {
@@ -126,31 +144,7 @@ export default function Noura() {
     if (isOpen && !('ontouchstart' in window)) {
       setTimeout(() => inputRef.current?.focus(), 400);
     }
-  }, [isOpen, messages.length]);
-
-  const detectTextDir = (text: string): "ltr" | "rtl" => {
-    const rtlChars = (text.match(/[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]/g) || []).length;
-    const ltrChars = (text.match(/[A-Za-z]/g) || []).length;
-    return rtlChars > ltrChars ? "rtl" : "ltr";
-  };
-
-  const getTime = () => {
-    return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  };
-
-  const sendBotGreeting = async () => {
-    setIsTyping(true);
-    await new Promise(r => setTimeout(r, 1000));
-    setIsTyping(false);
-    const newMsg: Message = {
-      id: Date.now().toString(),
-      text: T.greeting,
-      role: "bot",
-      timestamp: getTime(),
-      dir: detectTextDir(T.greeting)
-    };
-    setMessages([newMsg]);
-  };
+  }, [isOpen, messages.length, sendBotGreeting]);
 
   const handleSendMessage = async () => {
     const text = inputValue.trim();
@@ -215,7 +209,7 @@ export default function Noura() {
         };
         setMessages(prev => [...prev, botMsg]);
       }
-    } catch (e) {
+    } catch {
       setIsTyping(false);
       const errorMsg: Message = {
         id: Date.now().toString() + "_err",
@@ -231,7 +225,7 @@ export default function Noura() {
   };
 
   const renderText = (text: string) => {
-    let parts = text.split(/(\*\*.+?\*\*|\[.+?\]\(.+?\))/g);
+    const parts = text.split(/(\*\*.+?\*\*|\[.+?\]\(.+?\))/g);
     return parts.map((part, index) => {
       if (part.startsWith('**') && part.endsWith('**')) {
         return <strong key={index}>{part.slice(2, -2)}</strong>;

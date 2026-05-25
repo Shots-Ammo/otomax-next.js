@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Eye, Shield, Target, ArrowUpRight } from "lucide-react";
+import { Eye, Shield, Target } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -203,7 +203,9 @@ export default function Overview({ isArabic }: OverviewProps) {
       {/* Architectural Background Text */}
       <div
         ref={bgTextRef}
-        className="absolute top-10 -left-20 select-none pointer-events-none z-0 opacity-5 font-heading text-[20vw] font-black uppercase leading-none text-charcoal"
+        className={`absolute top-10 select-none pointer-events-none z-0 opacity-5 font-heading text-[20vw] font-black uppercase leading-none text-charcoal ${
+          isArabic ? "-right-20" : "-left-20"
+        }`}
       >
         {isArabic ? "نظرة عامة" : "Overview"}
       </div>

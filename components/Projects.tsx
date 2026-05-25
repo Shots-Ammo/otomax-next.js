@@ -5,13 +5,6 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, ClipboardCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
-
-// Register ScrollTrigger
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 interface ProjectsProps {
   isArabic: boolean;
@@ -81,24 +74,7 @@ export default function Projects({ isArabic }: ProjectsProps) {
     return () => observer.disconnect();
   }, []);
 
-  // GSAP ScrollTrigger for the gallery entrance
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(".gallery-item", {
-        scrollTrigger: {
-          trigger: galleryRef.current,
-          start: "top 85%",
-        },
-        y: 100,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.1,
-        ease: "power4.out",
-      });
-    }, galleryRef);
 
-    return () => ctx.revert();
-  }, [category]); // Re-trigger GSAP when category changes to animate the new items if scrolled into view
 
   // Animated counters
   const yearsCount = useCounter(12, 1500, inView);
@@ -114,7 +90,7 @@ export default function Projects({ isArabic }: ProjectsProps) {
     locationAr: "الجبيل، المملكة العربية السعودية",
     scope: "High-end structural execution and premium architectural finishes.",
     scopeAr: "تنفيذ إنشائي عالي المستوى وتشطيبات معمارية فاخرة.",
-    image: `/completed_project${i + 1}.png`,
+    image: `/completed_project${i + 1}.png?v=2`,
     heightClass: "h-[450px]"
   }));
 
@@ -126,7 +102,7 @@ export default function Projects({ isArabic }: ProjectsProps) {
     locationAr: "الجبيل، المملكة العربية السعودية",
     scope: "Advanced structural engineering and modern luxury integration.",
     scopeAr: "هندسة إنشائية متقدمة ودمج الفخامة الحديثة.",
-    image: `/current_project${i + 1}.png`,
+    image: `/current_project${i + 1}.png?v=2`,
     heightClass: "h-[450px]"
   }));
 
@@ -224,6 +200,7 @@ export default function Projects({ isArabic }: ProjectsProps) {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className="object-cover transition-transform duration-1000 ease-[cubic-bezier(0.25,0.1,0.25,1)] group-hover:scale-110"
                   priority={index < 4}
+                  unoptimized
                 />
 
                 {/* Dark Elegant Overlay */}

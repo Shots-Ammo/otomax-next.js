@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Outfit, Inter, Tajawal } from "next/font/google";
+import { Outfit, Inter, Cairo } from "next/font/google";
 import "./globals.css";
 import Noura from '@/components/get_bot';
 
@@ -15,10 +15,10 @@ const inter = Inter({
   weight: ["300", "400", "500", "600", "700"],
 });
 
-const tajawal = Tajawal({
-  variable: "--font-tajawal",
+const cairo = Cairo({
+  variable: "--font-cairo",
   subsets: ["arabic"],
-  weight: ["300", "400", "500", "700", "800"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -27,15 +27,19 @@ export const metadata: Metadata = {
   keywords: ["Gulf Evento", "Contracting Al Jubail", "Saudi Arabia Construction", "Architectural Finishing Jubail", "Structural Concrete", "Luxury Architecture Saudi"],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
+  const { locale } = await params;
   return (
     <html
-      lang="en"
-      className={`${outfit.variable} ${inter.variable} ${tajawal.variable} h-full scroll-smooth antialiased`}
+      lang={locale || "en"}
+      dir={locale === "ar" ? "rtl" : "ltr"}
+      className={`${outfit.variable} ${inter.variable} ${cairo.variable} h-full scroll-smooth antialiased`}
     >
       <body className="font-sans min-h-full bg-cream text-charcoal flex flex-col">
         {children}

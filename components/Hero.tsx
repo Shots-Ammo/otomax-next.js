@@ -23,7 +23,7 @@ export default function Hero({ isArabic }: HeroProps) {
 
       // Set initial states to prevent jump/FOUC
       gsap.set(".reveal-text", { yPercent: 100, opacity: 0 });
-      gsap.set(".hero-sub-content", { y: 20, opacity: 0 });
+      // gsap.set(".hero-sub-content", { y: 20, opacity: 0 });
       gsap.set(image1Ref.current, { x: isArabic ? -100 : 100, opacity: 0, scale: 0.8 });
       gsap.set(image3Ref.current, { x: isArabic ? 100 : -100, opacity: 0, scale: 0.8 });
 
@@ -131,7 +131,9 @@ export default function Hero({ isArabic }: HeroProps) {
       {/* Asymmetric Image Panels */}
       <div
         ref={image1Ref}
-        className="absolute z-10 w-full max-w-[450px] aspect-[3/4] overflow-hidden rounded-2xl shadow-2xl right-[-5%] top-[15%] hidden lg:block"
+        className={`absolute z-10 w-full max-w-[450px] aspect-[3/4] overflow-hidden rounded-2xl shadow-2xl top-[15%] hidden lg:block ${
+          isArabic ? "left-[-5%]" : "right-[-5%]"
+        }`}
       >
         <img
           src="/1.jpg"
@@ -143,7 +145,9 @@ export default function Hero({ isArabic }: HeroProps) {
 
       <div
         ref={image3Ref}
-        className="absolute z-10 w-full max-w-[380px] aspect-square overflow-hidden rounded-full shadow-2xl left-[-5%] bottom-[10%] hidden lg:block border-[12px] border-white/10"
+        className={`absolute z-10 w-full max-w-[380px] aspect-square overflow-hidden rounded-full shadow-2xl bottom-[10%] hidden lg:block border-[12px] border-white/10 ${
+          isArabic ? "right-[-5%]" : "left-[-5%]"
+        }`}
       >
         <img
           src="/photonumber3.jpg"
@@ -181,13 +185,7 @@ export default function Hero({ isArabic }: HeroProps) {
           </div>
 
           {/* Description & Actions */}
-          <div className="flex flex-col items-start gap-8 max-w-xl">
-            <p className="hero-sub-content text-lg sm:text-xl text-charcoal/60 font-light leading-relaxed tracking-wide opacity-0">
-              {isArabic
-                ? "نحن نجسد الجيل الجديد من البناء الفاخر والهندسة الدقيقة في المملكة العربية السعودية. نقوم ببناء مشاريع متكاملة تصمد لأجيال متعاقبة."
-                : "Embodying the next generation of luxury architecture and precise engineering in Saudi Arabia. We deliver state-of-the-art developments engineered to endure."}
-            </p>
-          </div>
+          
         </div>
 
         {/* Right Side: Empty for layout balance or supplementary elements */}

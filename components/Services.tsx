@@ -154,7 +154,7 @@ export default function Services({ isArabic }: ServicesProps) {
           opacity: 0,
           y: 80,
           rotateX: -20,
-          scale: 0.92,
+          scale: 1,
           transformOrigin: "center bottom",
         },
         {
@@ -233,7 +233,7 @@ export default function Services({ isArabic }: ServicesProps) {
       <div className="absolute inset-0 z-0 pointer-events-none">
         {/* Ambient glow orbs */}
         <div className="bg-glow-1 absolute top-[5%] left-[-8%] w-[550px] h-[550px] bg-accent/20 rounded-full blur-[100px]" />
-        <div className="bg-glow-2 absolute bottom-[5%] right-[-8%] w-[500px] h-[500px] bg-primary/25 rounded-full blur-[120px]" />
+        <div className="bg-glow-2 absolute bottom-[5%] right-[-8%] w-[500px] h-[500px] bg-accent/25 rounded-full blur-[120px]" />
         <div className="bg-glow-3 absolute top-[50%] left-[40%] w-[400px] h-[400px] bg-accent/10 rounded-full blur-[80px]" />
 
         {/* Subtle grid texture parallax layer */}
@@ -257,10 +257,10 @@ export default function Services({ isArabic }: ServicesProps) {
         <div
           ref={headerRef}
           className="flex flex-col items-start mb-24 relative"
-          style={{ textAlign: isArabic ? "right" : "left", alignItems: isArabic ? "flex-end" : "flex-start" }}
+          style={{ textAlign: isArabic ? "right" : "left" }}
         >
           {/* Eyebrow label */}
-          <span className="reveal-line inline-block font-heading text-[10px] sm:text-xs font-bold tracking-[0.35em] text-accent uppercase mb-6 border border-accent/30 px-4 py-2 rounded-full">
+          <span className="reveal-line inline-block font-heading text-[10px] sm:text-xs font-bold tracking-[0.35em] text-cream uppercase mb-6 border border-accent/30 px-4 py-2 rounded-full">
             {isArabic ? "ما نقدمه" : "What We Deliver"}
           </span>
 
@@ -268,15 +268,17 @@ export default function Services({ isArabic }: ServicesProps) {
             <span className="reveal-line block">
               {isArabic ? "خدماتنا في قطاع" : "Our services in the"}
             </span>
-            <span className="reveal-line block text-accent">
+            <span className="reveal-line block text-cream">
               {isArabic ? "المقاولات العامة" : "general contracting sector"}
             </span>
           </h2>
 
-          {/* Decorative counter pill — right-offset */}
-          <div className="reveal-line absolute top-0 right-0 hidden lg:flex flex-col items-center justify-center w-24 h-24 rounded-full border border-accent/20 bg-white/5 backdrop-blur-sm">
-            <span className="font-heading text-2xl font-extrabold text-accent">07</span>
-            <span className="font-heading text-[9px] uppercase tracking-widest text-cream/40">Services</span>
+          {/* Decorative counter pill — offset */}
+          <div className={`reveal-line absolute top-0 hidden lg:flex flex-col items-center justify-center w-24 h-24 rounded-full border border-accent/20 bg-white/5 backdrop-blur-sm ${isArabic ? "left-0" : "right-0"}`}>
+            <span className="font-heading text-2xl font-extrabold text-cream">07</span>
+            <span className="font-heading text-[9px] uppercase tracking-widest text-cream/40">
+              {isArabic ? "خدمات" : "Services"}
+            </span>
           </div>
         </div>
 
@@ -296,15 +298,20 @@ export default function Services({ isArabic }: ServicesProps) {
                 ? "md:-translate-y-5"
                 : "";
 
+            const isLastItem = service.index === 6;
+            const gridClasses = isLastItem
+              ? "lg:col-start-2 lg:col-span-1"
+              : "";
+
             return (
               <motion.div
                 key={service.id}
                 onClick={() => setSelectedService(service)}
                 onHoverStart={() => setHoveredId(service.id)}
                 onHoverEnd={() => setHoveredId(null)}
-                whileHover={{ y: -8, scale: 1.02 }}
+                whileHover={{ y: -6 }}
                 transition={{ type: "spring", stiffness: 260, damping: 22 }}
-                className={`service-card group relative cursor-pointer overflow-hidden rounded-2xl border border-white/8 bg-white/5 backdrop-blur-sm ${offsetClass}`}
+                className={`service-card group relative cursor-pointer overflow-hidden rounded-2xl border border-white/8 bg-white/5 backdrop-blur-sm ${offsetClass} ${gridClasses}`}
                 style={{ transformStyle: "preserve-3d" }}
               >
                 {/* Clip-path gold sweep on hover */}
@@ -337,9 +344,9 @@ export default function Services({ isArabic }: ServicesProps) {
                   </div>
 
                   {/* Icon */}
-                  <div className="w-14 h-14 rounded-xl border border-white/10 bg-white/5 group-hover:bg-charcoal/20 flex items-center justify-center text-accent group-hover:text-charcoal mb-8 transition-all duration-500 flex-shrink-0">
+                  <div className="w-14 h-14 rounded-xl border border-white/10 bg-white/5 group-hover:bg-charcoal/20 flex items-center justify-center text-cream group-hover:text-charcoal mb-8 transition-all duration-500 flex-shrink-0">
                     <motion.div
-                      animate={{ rotate: isHovered ? 12 : 0, scale: isHovered ? 1.15 : 1 }}
+                      animate={{ rotate: isHovered ? 12 : 0, scale: 1 }}
                       transition={{ type: "spring", stiffness: 300, damping: 20 }}
                     >
                       <ServiceIcon size={24} />
@@ -358,7 +365,7 @@ export default function Services({ isArabic }: ServicesProps) {
 
                   {/* Footer CTA */}
                   <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/10 group-hover:border-charcoal/20 transition-colors duration-500">
-                    <span className="text-[10px] font-heading font-bold text-accent group-hover:text-charcoal uppercase tracking-widest transition-colors duration-500">
+                    <span className="text-[10px] font-heading font-bold text-cream group-hover:text-charcoal uppercase tracking-widest transition-colors duration-500">
                       {isArabic ? "التفاصيل" : "View Details"}
                     </span>
                     <motion.div
@@ -405,7 +412,9 @@ export default function Services({ isArabic }: ServicesProps) {
               {/* Close button */}
               <button
                 onClick={() => setSelectedService(null)}
-                className="absolute top-6 right-6 p-2 rounded-full border border-white/10 text-white/50 hover:border-accent hover:text-accent transition-all duration-300"
+                className={`absolute top-6 p-2 rounded-full border border-white/10 text-white/50 hover:border-accent hover:text-cream transition-all duration-300 ${
+                  isArabic ? "left-6" : "right-6"
+                }`}
               >
                 <X size={16} />
               </button>
@@ -413,14 +422,14 @@ export default function Services({ isArabic }: ServicesProps) {
               <div className="flex flex-col gap-8 relative z-10">
                 {/* Service header */}
                 <div className="flex items-center gap-5">
-                  <div className="w-16 h-16 rounded-2xl bg-accent/15 border border-accent/25 flex items-center justify-center text-accent flex-shrink-0">
+                  <div className="w-16 h-16 rounded-2xl bg-accent/15 border border-accent/25 flex items-center justify-center text-cream flex-shrink-0">
                     {selectedService && <selectedService.icon size={30} />}
                   </div>
                   <div>
                     <h3 className="font-heading text-2xl sm:text-3xl font-bold text-cream uppercase tracking-tight">
                       {isArabic ? selectedService.titleAr : selectedService.title}
                     </h3>
-                    <span className="text-[10px] font-heading font-semibold tracking-widest text-accent uppercase">
+                    <span className="text-[10px] font-heading font-semibold tracking-widest text-cream uppercase">
                       {isArabic ? "تفاصيل الخدمة" : "Service Intelligence"}
                     </span>
                   </div>

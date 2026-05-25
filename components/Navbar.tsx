@@ -85,8 +85,8 @@ export default function Navbar({ isArabic, setIsArabic }: NavbarProps) {
                 key={link.name}
                 href={link.href}
                 className={cn(
-                  "font-heading text-sm font-medium tracking-wide relative py-1 transition-colors duration-300 group hover:text-primary",
-                  "text-charcoal/80"
+                  "font-heading text-sm font-semibold tracking-wide relative py-1 transition-colors duration-300 group hover:text-primary",
+                  "text-charcoal"
                 )}
               >
                 {link.name}
@@ -110,15 +110,14 @@ export default function Navbar({ isArabic, setIsArabic }: NavbarProps) {
             <button
               onClick={() => setIsArabic(!isArabic)}
               aria-label="Toggle Language"
-              className="relative flex items-center h-8 rounded-full bg-charcoal/8 border border-charcoal/15 overflow-hidden cursor-pointer select-none shadow-inner"
-              style={{ width: "120px" }}
+              className="relative flex items-center h-8 rounded-full bg-charcoal/8 border border-charcoal/15 p-0.5 cursor-pointer select-none shadow-inner"
+              style={{ width: "120px", direction: "ltr" }}
             >
               {/* Sliding pill indicator */}
               <motion.span
-                layout
-                animate={{ x: isArabic ? "50%" : "0%" }}
+                animate={{ x: isArabic ? 60 : 0 }}
                 transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                className="absolute top-0.5 bottom-0.5 w-[50%] rounded-full bg-primary shadow-md z-10"
+                className="absolute top-0.5 bottom-0.5 left-0.5 w-[56px] rounded-full bg-primary shadow-md z-10"
               />
               {/* English half */}
               <span
@@ -143,14 +142,13 @@ export default function Navbar({ isArabic, setIsArabic }: NavbarProps) {
             <button
               onClick={() => setIsArabic(!isArabic)}
               aria-label="Toggle Language"
-              className="relative flex items-center h-7 rounded-full bg-charcoal/8 border border-charcoal/15 overflow-hidden cursor-pointer select-none shadow-inner"
-              style={{ width: "104px" }}
+              className="relative flex items-center h-7 rounded-full bg-charcoal/8 border border-charcoal/15 p-0.5 cursor-pointer select-none shadow-inner"
+              style={{ width: "104px", direction: "ltr" }}
             >
               <motion.span
-                layout
-                animate={{ x: isArabic ? "50%" : "0%" }}
+                animate={{ x: isArabic ? 52 : 0 }}
                 transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                className="absolute top-0.5 bottom-0.5 w-[50%] rounded-full bg-primary shadow-md z-10"
+                className="absolute top-0.5 bottom-0.5 left-0.5 w-[48px] rounded-full bg-primary shadow-md z-10"
               />
               <span
                 className="relative z-20 flex-1 text-center text-[9px] font-heading font-bold tracking-wider uppercase transition-colors duration-300"
@@ -195,7 +193,7 @@ export default function Navbar({ isArabic, setIsArabic }: NavbarProps) {
                   key={link.name}
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="font-heading text-lg font-medium text-charcoal/90 hover:text-primary transition-colors"
+                  className="font-heading text-lg font-semibold text-charcoal hover:text-primary transition-colors"
                 >
                   {link.name}
                 </motion.a>
