@@ -81,30 +81,145 @@ export default function Projects({ isArabic }: ProjectsProps) {
   const staffCount = useCounter(60, 1500, inView);
   const projectsCount = useCounter(45, 1500, inView);
 
-  // 9 New Completed Projects mapped to the public images
-  const completedProjects: ProjectItem[] = Array.from({ length: 9 }).map((_, i) => ({
-    id: `comp${i + 1}`,
-    title: `Premium Project Portfolio ${i + 1}`,
-    titleAr: `ملف المشاريع الفاخرة ${i + 1}`,
-    location: "Al Jubail, KSA",
-    locationAr: "الجبيل، المملكة العربية السعودية",
-    scope: "High-end structural execution and premium architectural finishes.",
-    scopeAr: "تنفيذ إنشائي عالي المستوى وتشطيبات معمارية فاخرة.",
-    image: `/completed_project${i + 1}.png?v=2`,
-    heightClass: "h-[450px]"
-  }));
+  // Detailed Completed Projects matching the screenshots exactly
+  const completedProjects: ProjectItem[] = [
+    {
+      id: "comp1",
+      title: "Al Bandariyah Electromechanical Project",
+      titleAr: "مشروع إلكتروميكانيك البندرية",
+      location: "Al Khobar, KSA",
+      locationAr: "الخبر، المملكة العربية السعودية",
+      scope: "Turnkey electromechanical installations, power supply grids, and systems control.",
+      scopeAr: "أعمال الإلكتروميكانيك المتكاملة وتصميم وتشييد لوحات وشبكات التوزيع الكهربائي.",
+      image: "/completed_project1.png?v=2",
+      heightClass: "h-[450px]"
+    },
+    {
+      id: "comp2",
+      title: "Al Ajlan Group Warehouses",
+      titleAr: "مستودعات مجموعة العجلان",
+      location: "Riyadh / Jubail, KSA",
+      locationAr: "الرياض / الجبيل، المملكة العربية السعودية",
+      scope: "Heavy-duty concrete framework skeleton & complete electrical & plumbing systems.",
+      scopeAr: "تشييد الهيكل الخرساني المسلح عالي التحمل وتصميم وتمديد الشبكات الإلكتروميكانيكية.",
+      image: "/completed_project2.png?v=2",
+      heightClass: "h-[450px]"
+    },
+    {
+      id: "comp3",
+      title: "Al Khorayef Dammam Water Network",
+      titleAr: "مشروع مياه الخريف بالدمام",
+      location: "Dammam, KSA",
+      locationAr: "الدمام، المملكة العربية السعودية",
+      scope: "Industrial plumbing, water supply lines, electromechanical pumps & instrumentation.",
+      scopeAr: "أعمال الإلكتروميكانيك الشاملة لشبكات المياه وتصميم وتمديد البنية التحتية والمضخات.",
+      image: "/completed_project3.png?v=2",
+      heightClass: "h-[450px]"
+    },
+    {
+      id: "comp4",
+      title: "Al Saif Transport Warehouses",
+      titleAr: "مستودعات شركة السيف للنقليات",
+      location: "Al Jubail, KSA",
+      locationAr: "الجبيل، المملكة العربية السعودية",
+      scope: "Heavy-load structural concrete execution, full MEP grid works & turnkey architectural finishing.",
+      scopeAr: "الهيكل الخرساني بالكامل، وتمديد الأنظمة الإلكتروميكانيكية المتطورة وتشطيب متكامل من الألف إلى الياء.",
+      image: "/completed_project4.png?v=2",
+      heightClass: "h-[450px]"
+    },
+    {
+      id: "comp5",
+      title: "Balhmer Gate Commercial Tower",
+      titleAr: "مشروع بوابة بالحمر الإداري",
+      location: "Dammam, KSA",
+      locationAr: "الدمام، المملكة العربية السعودية",
+      scope: "Elite structural concrete works, premium architectural finishes & complete MEP systems.",
+      scopeAr: "أعمال التشطيبات المعمارية الفاخرة للواجهات والداخلي بالإضافة إلى الأنظمة الإلكتروميكانيكية المتكاملة.",
+      image: "/completed_project5.png?v=2",
+      heightClass: "h-[450px]"
+    },
+    {
+      id: "comp6",
+      title: "Al Ahsa Mall Commercial Project",
+      titleAr: "مشروع الأحساء مول التجاري",
+      location: "Al Ahsa, KSA",
+      locationAr: "الأحساء، المملكة العربية السعودية",
+      scope: "Turnkey architectural finishes, structural masonry reinforcement & complete electromechanical grids.",
+      scopeAr: "تشطيبات معمارية متكاملة، تحسينات إنشائية هيكلية وتصميم وتمديد الأنظمة الإلكتروميكانيكية.",
+      image: "/completed_project6.png?v=2",
+      heightClass: "h-[450px]"
+    },
+    {
+      id: "comp7",
+      title: "Al Mohammadiyah Residential Buildings",
+      titleAr: "مجموعة عمارات المحمدية السكنية",
+      location: "Al Jubail, KSA",
+      locationAr: "الجبيل، المملكة العربية السعودية",
+      scope: "Luxury structural concrete frames, custom external masonry cladding & full electromechanical networks.",
+      scopeAr: "تنفيذ الهياكل الخرسانية الفاخرة، التشطيبات والكسوة المعمارية الراقية والشبكات الإلكتروميكانيكية.",
+      image: "/completed_project7.png?v=2",
+      heightClass: "h-[450px]"
+    },
+    {
+      id: "comp8",
+      title: "Nawat Corporate Tower",
+      titleAr: "برج نواة الإداري (Nawat Tower)",
+      location: "Jubail Industrial City, KSA",
+      locationAr: "مدينة الجبيل الصناعية، المملكة العربية السعودية",
+      scope: "Total Mechanical, Electrical & Plumbing (MEP) infrastructure engineering & building automation.",
+      scopeAr: "أعمال الإلكتروميكانيك MEP بالكامل للبنية التحتية للبرج الإداري وتصميم الشبكات الذكية.",
+      image: "/completed_project8.png?v=2",
+      heightClass: "h-[450px]"
+    },
+    {
+      id: "comp9",
+      title: "Badr Villas Housing Complex",
+      titleAr: "مجمع فيلات بدر السكني بالمدينة المنورة",
+      location: "Madinah, KSA",
+      locationAr: "المدينة المنورة، المملكة العربية السعودية",
+      scope: "High-performance reinforced concrete structures & premium turnkey architectural finishes.",
+      scopeAr: "أعمال الهيكل الخرساني والإنشائي المتين بالإضافة إلى تشطيبات معمارية فاخرة ومتكاملة للفيلات.",
+      image: "/completed_project9.png?v=2",
+      heightClass: "h-[450px]"
+    }
+  ];
 
-  const ongoingProjects: ProjectItem[] = Array.from({ length: 3 }).map((_, i) => ({
-    id: `ong${i + 1}`,
-    title: `Current Signature Development ${i + 1}`,
-    titleAr: `تطوير المشاريع الحالية ${i + 1}`,
-    location: "Al Jubail, KSA",
-    locationAr: "الجبيل، المملكة العربية السعودية",
-    scope: "Advanced structural engineering and modern luxury integration.",
-    scopeAr: "هندسة إنشائية متقدمة ودمج الفخامة الحديثة.",
-    image: `/current_project${i + 1}.png?v=2`,
-    heightClass: "h-[450px]"
-  }));
+  // Detailed Ongoing Projects
+  const ongoingProjects: ProjectItem[] = [
+    {
+      id: "ong1",
+      title: "Signature Bay View Business Park",
+      titleAr: "مجمع غلف إيفينتو للأعمال",
+      location: "Jubail Industrial City, KSA",
+      locationAr: "مدينة الجبيل الصناعية، المملكة العربية السعودية",
+      scope: "Ongoing civil excavation, heavy-grade deep foundation concrete & architectural design planning.",
+      scopeAr: "أعمال الحفر المدني وتأسيس القواعد الخرسانية العميقة والتصميم الإنشائي المعماري الجاري.",
+      image: "/current_project1.png?v=2",
+      heightClass: "h-[450px]"
+    },
+    {
+      id: "ong2",
+      title: "Al Mutrafiah Executive Villas District",
+      titleAr: "فلل حي المطرفية للقياديين",
+      location: "Al Mutrafiah District, Jubail",
+      locationAr: "حي المطرفية، الجبيل",
+      scope: "Ongoing structural concrete framing, customized masonry finishing & site logistics management.",
+      scopeAr: "تشييد الهياكل الخرسانية، أعمال البناء والكسوة المعمارية واللوجستية الجارية في الموقع.",
+      image: "/current_project2.png?v=2",
+      heightClass: "h-[450px]"
+    },
+    {
+      id: "ong3",
+      title: "Jubail Logistics Center Expansion",
+      titleAr: "توسعة مركز الجبيل اللوجستي",
+      location: "Jubail Support Area",
+      locationAr: "منطقة الدعم بالجبيل",
+      scope: "Ongoing electromechanical infrastructure installation, plumbing grids & steel framework alignment.",
+      scopeAr: "توسعة الشبكات الإلكتروميكانيكية، أعمال السباكة الصناعية والحديد الإنشائي الجارية.",
+      image: "/current_project3.png?v=2",
+      heightClass: "h-[450px]"
+    }
+  ];
 
   const activeProjects = category === "completed" ? completedProjects : ongoingProjects;
 
@@ -178,66 +293,57 @@ export default function Projects({ isArabic }: ProjectsProps) {
               <motion.div
                 key={project.id}
                 layout
-                initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+                initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
                 animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                exit={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+                exit={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
                 transition={{ 
-                  duration: 0.5, 
-                  delay: index * 0.05, 
+                  duration: 0.4, 
+                  delay: index * 0.04, 
                   ease: [0.25, 0.1, 0.25, 1],
                   layout: { type: "spring", stiffness: 300, damping: 30 }
                 }}
-                className={cn(
-                  "gallery-item relative w-full rounded-2xl overflow-hidden break-inside-avoid group cursor-pointer border border-[#26336D]/5 bg-[#26336D]/5",
-                  project.heightClass
-                )}
+                className="flex flex-col h-full w-full rounded-2xl overflow-hidden border border-[#26336D]/10 bg-white shadow-md transition-shadow duration-300 hover:shadow-lg cursor-pointer"
               >
-                {/* High Quality Image Background */}
-                <Image
-                  src={project.image}
-                  alt={isArabic ? project.titleAr : project.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-1000 ease-[cubic-bezier(0.25,0.1,0.25,1)] group-hover:scale-110"
-                  priority={index < 4}
-                  unoptimized
-                />
+                {/* High Quality Image Container */}
+                <div className="relative w-full h-[260px] overflow-hidden bg-[#26336D]/5 flex-shrink-0">
+                  <Image
+                    src={project.image}
+                    alt={isArabic ? project.titleAr : project.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-contain bg-white p-2"
+                    priority={index < 3}
+                    unoptimized
+                  />
 
-                {/* Dark Elegant Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#26336D]/95 via-[#26336D]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-out" />
-
-                {/* 45 Degree Corner Ribbon */}
-                <div className={cn(
-                  "absolute top-6 py-1.5 w-[160px] bg-[#AB953F] text-white text-[10px] font-heading font-bold uppercase tracking-widest text-center shadow-xl z-20",
-                  "transition-all duration-500 ease-out",
-                  "opacity-0 group-hover:opacity-100",
-                  isArabic 
-                    ? "-left-12 -rotate-45" 
-                    : "-right-12 rotate-45"
-                )}>
-                  {category === "completed"
-                    ? (isArabic ? "مكتمل" : "Completed")
-                    : (isArabic ? "قيد التنفيذ" : "Ongoing")}
+                  {/* 45 Degree Corner Ribbon */}
+                  <div className={cn(
+                    "absolute top-6 py-1.5 w-[160px] bg-[#AB953F] text-white text-[10px] font-heading font-bold uppercase tracking-widest text-center shadow-md z-20",
+                    isArabic 
+                      ? "-left-12 -rotate-45" 
+                      : "-right-12 rotate-45"
+                  )}>
+                    {category === "completed"
+                      ? (isArabic ? "مكتمل" : "Completed")
+                      : (isArabic ? "قيد التنفيذ" : "Ongoing")}
+                  </div>
                 </div>
 
-                {/* Kinetic Content Reveal - Bottom */}
-                <div className={cn(
-                  "absolute bottom-0 w-full p-8 flex flex-col justify-end transition-all duration-700 ease-[cubic-bezier(0.25,0.1,0.25,1)]",
-                  "opacity-0 translate-y-10 group-hover:opacity-100 group-hover:translate-y-0"
-                )}>
+                {/* Card Content - Permanently Visible & Highly Readable */}
+                <div className="p-6 flex flex-col flex-1 bg-white">
                   {/* Location label */}
-                  <span className="text-[11px] font-heading font-semibold text-[#AB953F] uppercase tracking-widest block mb-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-700 delay-100">
+                  <span className="text-[11px] font-heading font-semibold text-[#AB953F] uppercase tracking-widest block mb-2">
                     📍 {isArabic ? project.locationAr : project.location}
                   </span>
                   
                   {/* Title */}
-                  <h3 className="font-heading text-2xl font-bold text-white mb-3 leading-snug transform translate-y-4 group-hover:translate-y-0 transition-transform duration-700 delay-150 drop-shadow-md">
+                  <h3 className="font-heading text-xl font-bold text-[#26336D] mb-3 leading-snug">
                     {isArabic ? project.titleAr : project.title}
                   </h3>
 
                   {/* Scope details */}
-                  <div className="border-t border-white/20 pt-4 mt-1 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-700 delay-200">
-                    <p className="text-white/80 font-light text-sm leading-relaxed line-clamp-2">
+                  <div className="border-t border-[#26336D]/10 pt-4 mt-auto">
+                    <p className="text-[#26336D]/70 font-light text-sm leading-relaxed line-clamp-3">
                       {isArabic ? project.scopeAr : project.scope}
                     </p>
                   </div>
