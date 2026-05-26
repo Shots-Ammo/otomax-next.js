@@ -172,12 +172,12 @@ export default function Hero({ isArabic }: HeroProps) {
                 </span>
               </span>
               <span className="block overflow-hidden py-1">
-                <span className="reveal-text block whitespace-nowrap text-primary font-extrabold translate-y-0 opacity-0">
+                <span className="reveal-text block whitespace-normal md:whitespace-nowrap text-primary font-extrabold translate-y-0 opacity-0">
                   {isArabic ? "المقاولات العامة" : "General Contracting"}
                 </span>
               </span>
               <span className="block overflow-hidden py-1">
-                <span className="reveal-text whitespace-nowrap block translate-y-0 opacity-0">
+                <span className="reveal-text whitespace-normal md:whitespace-nowrap block translate-y-0 opacity-0">
                   {isArabic ? "والهندسة المعمارية" : "& Architecture"}
                 </span>
               </span>
