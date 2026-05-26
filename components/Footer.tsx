@@ -1,6 +1,7 @@
 "use client";
 
 import { Phone, MessageCircle, MapPin } from "lucide-react";
+import Image from "next/image";
 
 interface FooterProps {
   isArabic: boolean;
@@ -18,23 +19,14 @@ export default function Footer({ isArabic }: FooterProps) {
         {/* Brand Summary */}
         <div className={`md:col-span-5 flex flex-col items-start ${isArabic ? "text-right" : "text-left"}`}>
           <div className="flex items-center gap-3 group mb-6">
-            <div
-              className="w-8 h-8 border border-accent bg-accent/10 flex items-center justify-center relative overflow-hidden"
-              style={{ transform: "rotate(45deg)" }}
-            >
-              <svg
-                viewBox="0 0 100 100"
-                className="w-4 h-4 text-accent"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="8"
-                style={{ transform: "rotate(-45deg)" }}
-              >
-                <path d="M10,10 L90,10 L90,90 L10,90 Z" />
-                <path d="M30,30 L70,30 L70,70 L30,70 Z" />
-                <path d="M50,10 L50,90" />
-                <path d="M10,50 L90,50" />
-              </svg>
+            <div className="relative w-12 h-12 sm:w-14 sm:h-14 flex-shrink-0">
+              <Image
+                src="/gulf_logo.png"
+                alt="Gulf Evento Logo"
+                fill
+                className="object-contain"
+                unoptimized
+              />
             </div>
             <div className={`flex flex-col ${isArabic ? "text-right" : "text-left"}`}>
               <span className="font-heading font-semibold text-base tracking-wider leading-none text-primary">

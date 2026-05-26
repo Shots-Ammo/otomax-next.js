@@ -136,7 +136,7 @@ export default function Hero({ isArabic }: HeroProps) {
         }`}
       >
         <img
-          src="/1.jpg"
+          src="/1.webp"
           alt="Architectural Detail 1"
           className="w-full h-full object-cover scale-110"
         />
@@ -150,7 +150,7 @@ export default function Hero({ isArabic }: HeroProps) {
         }`}
       >
         <img
-          src="/photonumber3.jpg"
+          src="/photonumber3.webp"
           alt="Architectural Detail 3"
           className="w-full h-full object-cover scale-110"
         />

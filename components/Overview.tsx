@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Eye, Shield, Target } from "lucide-react";
+import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -233,20 +234,20 @@ export default function Overview({ isArabic }: OverviewProps) {
               </h2>
             </div>
 
-            <p className="overview-p text-charcoal/70 text-lg sm:text-xl font-light leading-relaxed max-w-lg">
+            <p className="overview-p text-charcoal/70 text-base sm:text-lg lg:text-xl font-light leading-relaxed max-w-lg">
               {overviewText}
             </p>
 
             {/* Dynamic Stats */}
-            <div className="flex gap-12 pt-8 border-t border-charcoal/10">
+            <div className="flex gap-8 sm:gap-12 pt-8 border-t border-charcoal/10">
               <div >
-                <span className="stat-value block font-heading text-4xl sm:text-5xl font-bold text-charcoal" data-value="1435">0</span>
+                <span className="stat-value block font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-charcoal" data-value="1435">0</span>
                 <span className="text-[10px] uppercase tracking-widest text-charcoal/40 font-bold mt-2 block">
                   {isArabic ? "عام التأسيس" : "Founded (H)"}
                 </span>
               </div>
               <div >
-                <span className="stat-value block font-heading text-4xl sm:text-5xl font-bold text-charcoal" data-value="60">0</span>
+                <span className="stat-value block font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-charcoal" data-value="60">0</span>
                 <span className="text-[10px] uppercase tracking-widest text-charcoal/40 font-bold mt-2 block">
                   {isArabic ? "خبير متخصص" : "Experts"}
                 </span>
@@ -258,49 +259,50 @@ export default function Overview({ isArabic }: OverviewProps) {
           <div className="lg:col-span-7 relative h-full flex items-center justify-center">
 
             {/* The Prism Card */}
-            <div className="relative w-full max-w-2xl aspect-video lg:aspect-[4/3] rounded-sm overflow-hidden shadow-2xl transition-colors duration-700 group">
+            <div className="relative w-full max-w-2xl min-h-[400px] sm:min-h-[450px] lg:min-h-[auto] lg:aspect-[4/3] rounded-sm overflow-hidden shadow-2xl transition-colors duration-700 group">
 
               {/* Background Color Layer: Blue (Charcoal) for active state */}
               <div className="absolute inset-0 bg-charcoal z-0" />
 
-              {/* Gold Sweep Mask */}
-              <div className="gold-sweep absolute inset-0 bg-primary z-30 scale-x-0 origin-left pointer-events-none" />
+              {/* Gold Gradient Sweep Mask */}
+              <div
+                className="gold-sweep absolute inset-0 z-30 scale-x-0 origin-left pointer-events-none"
+                style={{
+                  background: "linear-gradient(135deg, #C9A84C 0%, #E8D48B 40%, #D4AF37 60%, #C9A84C 100%)",
+                }}
+              />
 
               {/* Logo Overlay */}
               <div className="logo-transition-overlay absolute inset-0 z-40 flex items-center justify-center opacity-0 scale-75 pointer-events-none">
-                <div className="w-24 h-24 border-2 border-primary bg-charcoal p-4 rounded-full flex items-center justify-center text-primary shadow-xl">
-                  <svg
-                    viewBox="0 0 100 100"
-                    className="w-12 h-12"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="8"
-                    style={{ transform: "rotate(0deg)" }}
-                  >
-                    <path d="M10,10 L90,10 L90,90 L10,90 Z" />
-                    <path d="M30,30 L70,30 L70,70 L30,70 Z" />
-                    <path d="M50,10 L50,90" />
-                    <path d="M10,50 L90,50" />
-                  </svg>
+                <div className="w-24 h-24 bg-charcoal p-2 rounded-full flex items-center justify-center shadow-xl border-2 border-primary overflow-hidden">
+                  <div className="relative w-16 h-16">
+                    <Image
+                      src="/gulf_logo.png"
+                      alt="Gulf Evento Logo"
+                      fill
+                      className="object-contain"
+                      unoptimized
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* Content Area */}
-              <div className="active-panel relative z-10 h-full w-full p-12 sm:p-20 flex flex-col justify-center text-cream">
-                <div className="flex items-center gap-6 mb-8">
-                  <div className={`w-14 h-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-primary`}>
-                    {React.createElement(features[displayIndex].icon, { size: 28 })}
+              <div className="active-panel relative z-10 h-full w-full p-8 sm:p-12 lg:p-20 flex flex-col justify-center text-cream">
+                <div className="flex items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
+                  <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-primary flex-shrink-0`}>
+                    {React.createElement(features[displayIndex].icon, { size: 24 })}
                   </div>
-                  <h3 className="font-heading text-3xl sm:text-4xl font-bold uppercase tracking-tighter">
+                  <h3 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold uppercase tracking-tighter">
                     {features[displayIndex].title}
                   </h3>
                 </div>
-                <p className="text-cream/70 text-lg sm:text-xl font-light leading-relaxed max-w-lg">
+                <p className="text-cream/70 text-base sm:text-lg lg:text-xl font-light leading-relaxed max-w-lg">
                   {features[displayIndex].content}
                 </p>
 
                 {/* Subtle architectural line */}
-                <div className="absolute bottom-12 right-12 w-24 h-1 bg-primary/30" />
+                <div className="absolute bottom-8 sm:bottom-12 right-8 sm:right-12 w-24 h-1 bg-primary/30" />
               </div>
             </div>
 

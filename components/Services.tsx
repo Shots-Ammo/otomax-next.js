@@ -309,6 +309,17 @@ export default function Services({ isArabic }: ServicesProps) {
                 onClick={() => setSelectedService(service)}
                 onHoverStart={() => setHoveredId(service.id)}
                 onHoverEnd={() => setHoveredId(null)}
+                onViewportEnter={() => {
+                  if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
+                    setHoveredId(service.id);
+                  }
+                }}
+                onViewportLeave={() => {
+                  if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
+                    if (hoveredId === service.id) setHoveredId(null);
+                  }
+                }}
+                viewport={{ margin: "-30% 0px -30% 0px", amount: 0.3 }}
                 whileHover={{ y: -6 }}
                 transition={{ type: "spring", stiffness: 260, damping: 22 }}
                 className={`service-card group relative cursor-pointer overflow-hidden rounded-2xl border border-white/8 bg-white/5 backdrop-blur-sm ${offsetClass} ${gridClasses}`}
@@ -321,7 +332,7 @@ export default function Services({ isArabic }: ServicesProps) {
                   animate={{ clipPath: isHovered ? "inset(0% 0 0 0)" : "inset(100% 0 0 0)" }}
                   transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
                   style={{
-                    background: "linear-gradient(135deg, #AB953F 0%, #d4b96a 50%, #AB953F 100%)",
+                    background: "linear-gradient(135deg, #C9A84C 0%, #E8D48B 50%, #C9A84C 100%)",
                   }}
                 />
 

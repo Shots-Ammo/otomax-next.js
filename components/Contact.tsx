@@ -323,7 +323,7 @@ export default function Contact({ isArabic }: ContactProps) {
                       </div>
 
                       {/* Step Contents */}
-                      <div className="relative overflow-visible min-h-[220px]">
+                      <div className="relative overflow-visible min-h-[380px] sm:min-h-[220px]">
                         <AnimatePresence custom={direction} mode="wait">
                           {step === 1 && (
                             <motion.div

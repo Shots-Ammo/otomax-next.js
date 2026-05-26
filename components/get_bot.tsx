@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { Send, X, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 const CustomChatIcon = ({ className }: { className?: string }) => (
   <svg
@@ -49,12 +50,12 @@ const CONFIG = {
     },
     webhookUrl: "https://n8n.srv1587679.hstgr.cloud/webhook/gulfevento",
     theme: {
-    primary: "#AB953F", // Gold (Main)
+    primary: "#C9A84C", // Gold (Main)
     charcoal: "#26336D", // Deep Blue (Accent)
     cream: "#FBFBFA", // Cream
-    botBubble: "bg-white text-[#26336D] border border-[#AB953F]/20 shadow-sm",
-    userBubble: "bg-gradient-to-br from-[#AB953F] to-[#8a7a30] text-white shadow-md",
-    headerBg: "bg-gradient-to-r from-[#AB953F] to-[#8a7a30]",
+    botBubble: "bg-white text-[#26336D] border border-[#C9A84C]/20 shadow-sm",
+    userBubble: "bg-gradient-to-br from-[#C9A84C] to-[#B8963A] text-white shadow-md",
+    headerBg: "bg-gradient-to-r from-[#C9A84C] to-[#B8963A]",
     widgetBg: "bg-[#FBFBFA]",
     accent: "#26336D",
   }
@@ -279,12 +280,12 @@ export default function Noura() {
         )}
       >
         {/* Animated Border Container */}
-        <div className="absolute inset-0 rounded-full overflow-hidden bg-[#AB953F]/20">
-          <div className="absolute inset-[-50%] w-[200%] h-[200%] animate-[spin_2.5s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0_240deg,#AB953F_360deg)]" />
+        <div className="absolute inset-0 rounded-full overflow-hidden bg-[#C9A84C]/20">
+          <div className="absolute inset-[-50%] w-[200%] h-[200%] animate-[spin_2.5s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0_240deg,#C9A84C_360deg)]" />
         </div>
 
         {/* Inner Gold button */}
-        <div className="absolute inset-[3px] bg-gradient-to-br from-[#AB953F] to-[#8a7a30] rounded-full z-10 flex items-center justify-center shadow-inner">
+        <div className="absolute inset-[3px] bg-gradient-to-br from-[#C9A84C] to-[#B8963A] rounded-full z-10 flex items-center justify-center shadow-inner">
           <AnimatePresence mode="wait">
             {isOpen ? (
               <motion.div
@@ -328,32 +329,44 @@ export default function Noura() {
             exit={{ opacity: 0, y: 30, scale: 0.9 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className={cn(
-              "absolute bottom-20 right-0 w-[380px] h-[650px] max-h-[calc(100vh-120px)] rounded-3xl overflow-hidden flex flex-col shadow-2xl border border-[#AB953F]/30",
+              "absolute bottom-20 right-0 w-[340px] sm:w-[380px] h-[600px] sm:h-[650px] max-h-[calc(100vh-120px)] rounded-3xl overflow-hidden flex flex-col shadow-2xl border border-[#C9A84C]/30",
               CONFIG.theme.widgetBg,
               isRTL ? "rtl" : "ltr"
             )}
             style={{ direction: isRTL ? "rtl" : "ltr" }}
           >
             {/* Header */}
-            <div className={cn("p-5 flex items-center justify-between border-b border-white/20", CONFIG.theme.headerBg)}>
-              <div className="flex flex-col">
-                <h3 className="text-xl font-bold text-white leading-tight tracking-tight drop-shadow-md">
-                  {T.botName}
-                </h3>
-                <div className="flex items-center gap-2 mt-1.5">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
-                  </span>
-                  <span className="text-xs text-white/90 font-medium tracking-wide">
-                    {T.botSubtitle}
-                  </span>
+            <div className={cn("p-4 sm:p-5 flex items-center justify-between border-b border-white/20", CONFIG.theme.headerBg)}>
+              <div className="flex items-center gap-3">
+                {/* Logo */}
+                <div className="relative w-10 h-10 rounded-full overflow-hidden bg-white/20 flex-shrink-0 border border-white/30">
+                  <Image
+                    src="/gulf_logo.png"
+                    alt="Gulf Evento Logo"
+                    fill
+                    className="object-contain p-0.5"
+                    unoptimized
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <h3 className="text-lg sm:text-xl font-bold text-white leading-tight tracking-tight drop-shadow-md">
+                    {T.botName}
+                  </h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
+                    </span>
+                    <span className="text-xs text-white/90 font-medium tracking-wide">
+                      {T.botSubtitle}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4 scroll-smooth relative bg-gradient-to-b from-white to-[#FBFBFA]">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col gap-4 scroll-smooth relative bg-gradient-to-b from-white to-[#FBFBFA]">
               <AnimatePresence initial={false}>
                 {messages.map((msg) => (
                   <motion.div
@@ -368,7 +381,7 @@ export default function Noura() {
                   >
                     <div
                       className={cn(
-                        "px-4 py-3 rounded-2xl text-[14px] leading-relaxed shadow-sm",
+                        "px-4 py-3 rounded-2xl text-[13px] sm:text-[14px] leading-relaxed shadow-sm",
                         msg.role === "user"
                           ? cn("rounded-br-none", CONFIG.theme.userBubble)
                           : cn("rounded-bl-none", CONFIG.theme.botBubble)
@@ -421,7 +434,7 @@ export default function Noura() {
 
 
             {/* Input Area */}
-            <div className="p-4 bg-white border-t border-slate-100 flex gap-3 items-end shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.05)]">
+            <div className="p-3 sm:p-4 bg-white border-t border-slate-100 flex gap-3 items-end shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.05)]">
               <textarea
                 ref={inputRef}
                 rows={1}
@@ -438,7 +451,7 @@ export default function Noura() {
                   }
                 }}
                 placeholder={T.placeholder}
-                className="flex-1 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-[#26336D] text-[15px] outline-none focus:border-[#AB953F] focus:ring-2 focus:ring-[#AB953F]/20 transition-all resize-none overflow-hidden max-h-[120px] shadow-inner"
+                className="flex-1 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-[#26336D] text-[14px] sm:text-[15px] outline-none focus:border-[#C9A84C] focus:ring-2 focus:ring-[#C9A84C]/20 transition-all resize-none overflow-hidden max-h-[120px] shadow-inner"
               />
               <motion.button
                 whileHover={inputValue.trim() && !isBusy ? { scale: 1.05 } : {}}
@@ -446,14 +459,14 @@ export default function Noura() {
                 disabled={!inputValue.trim() || isBusy}
                 onClick={handleSendMessage}
                 className={cn(
-                  "w-[46px] h-[46px] shrink-0 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-md",
+                  "w-[44px] h-[44px] sm:w-[46px] sm:h-[46px] shrink-0 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-md",
                   inputValue.trim() && !isBusy
-                    ? "bg-[#26336D] text-[#AB953F] hover:shadow-lg hover:shadow-[#26336D]/20"
+                    ? "bg-[#26336D] text-[#C9A84C] hover:shadow-lg hover:shadow-[#26336D]/20"
                     : "bg-slate-100 text-slate-400 cursor-not-allowed"
                 )}
               >
                 {isBusy ? (
-                  <Loader2 className="w-5 h-5 animate-spin text-[#AB953F]" />
+                  <Loader2 className="w-5 h-5 animate-spin text-[#C9A84C]" />
                 ) : (
                   <Send className="w-5 h-5 ml-0.5" />
                 )}
@@ -468,7 +481,7 @@ export default function Noura() {
                   href="https://otomax.tech"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#26336D] font-bold hover:text-[#AB953F] transition-colors"
+                  className="text-[#26336D] font-bold hover:text-[#C9A84C] transition-colors"
                 >
                   Otomax
                 </a>

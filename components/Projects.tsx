@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, ClipboardCheck } from "lucide-react";
@@ -52,6 +52,7 @@ function useCounter(target: number, duration: number = 2000, trigger: boolean = 
 export default function Projects({ isArabic }: ProjectsProps) {
   const [category, setCategory] = useState<ProjectCategory>("completed");
   const [inView, setInView] = useState(false);
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const metricsRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
 
@@ -230,16 +231,16 @@ export default function Projects({ isArabic }: ProjectsProps) {
       style={{ direction: isArabic ? "rtl" : "ltr" }}
     >
       {/* Dynamic Background Geometry */}
-      <div className="absolute right-0 bottom-0 w-80 h-80 bg-[#AB953F]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute right-0 bottom-0 w-80 h-80 bg-[#C9A84C]/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute left-[-10%] top-[20%] w-96 h-96 bg-[#26336D]/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-[90rem] mx-auto px-6">
+      <div className="max-w-[90rem] mx-auto px-4 sm:px-6">
         {/* Section Header */}
-        <div className="flex flex-col items-center text-center mb-16 relative z-10">
-          <h2 className="font-heading text-4xl sm:text-6xl font-extrabold tracking-tight text-[#26336D] mb-6 leading-tight">
+        <div className="flex flex-col items-center text-center mb-12 sm:mb-16 relative z-10">
+          <h2 className="font-heading text-3xl sm:text-4xl lg:text-6xl font-extrabold tracking-tight text-[#26336D] mb-4 sm:mb-6 leading-tight">
             {isArabic ? "مشاريعنا الإنشائية" : "Our Projects Portfolio"}
           </h2>
-          <p className="text-[#26336D]/60 max-w-2xl font-light text-base sm:text-lg mt-2">
+          <p className="text-[#26336D]/60 max-w-2xl font-light text-sm sm:text-base lg:text-lg mt-2 px-2">
             {isArabic
               ? "تفخر شركة جلف إيفينتو بسجل حافل من الإنجازات العمرانية والمشاريع التي تم تسليمها بأعلى معايير الدقة الهندسية. استعرض محفظتنا من التحف المعمارية."
               : "Explore our prestigious achievements. From luxury estates to heavy industrial complexes, built on a foundation of structural perfection and visual elegance."}
@@ -247,19 +248,19 @@ export default function Projects({ isArabic }: ProjectsProps) {
         </div>
 
         {/* Categories Toggle Switch */}
-        <div className="flex justify-center mb-20 relative z-10">
+        <div className="flex justify-center mb-12 sm:mb-20 relative z-10">
           <div className="flex border border-[#26336D]/10 p-1.5 bg-[#26336D]/5 rounded-xl gap-2 backdrop-blur-sm">
             <button
               onClick={() => setCategory("completed")}
               className={cn(
-                "relative flex items-center gap-2 px-8 py-3 font-heading font-bold text-xs sm:text-sm uppercase tracking-wider rounded-lg transition-all duration-500 outline-none overflow-hidden group",
+                "relative flex items-center gap-2 px-4 sm:px-8 py-2.5 sm:py-3 font-heading font-bold text-[10px] sm:text-sm uppercase tracking-wider rounded-lg transition-all duration-500 outline-none overflow-hidden group",
                 category === "completed" ? "text-white shadow-xl" : "text-[#26336D]/60 hover:text-[#26336D]"
               )}
             >
               {category === "completed" && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute inset-0 bg-gradient-to-r from-[#AB953F] to-[#8a7a30] rounded-lg -z-10"
+                  className="absolute inset-0 bg-gradient-to-r from-[#C9A84C] to-[#B8963A] rounded-lg -z-10"
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}
@@ -269,14 +270,14 @@ export default function Projects({ isArabic }: ProjectsProps) {
             <button
               onClick={() => setCategory("ongoing")}
               className={cn(
-                "relative flex items-center gap-2 px-8 py-3 font-heading font-bold text-xs sm:text-sm uppercase tracking-wider rounded-lg transition-all duration-500 outline-none overflow-hidden group",
+                "relative flex items-center gap-2 px-4 sm:px-8 py-2.5 sm:py-3 font-heading font-bold text-[10px] sm:text-sm uppercase tracking-wider rounded-lg transition-all duration-500 outline-none overflow-hidden group",
                 category === "ongoing" ? "text-white shadow-xl" : "text-[#26336D]/60 hover:text-[#26336D]"
               )}
             >
               {category === "ongoing" && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute inset-0 bg-gradient-to-r from-[#AB953F] to-[#8a7a30] rounded-lg -z-10"
+                  className="absolute inset-0 bg-gradient-to-r from-[#C9A84C] to-[#B8963A] rounded-lg -z-10"
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}
@@ -287,7 +288,7 @@ export default function Projects({ isArabic }: ProjectsProps) {
         </div>
 
         {/* Grid Image Gallery */}
-        <div ref={galleryRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div ref={galleryRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <AnimatePresence mode="wait">
             {activeProjects.map((project, index) => (
               <motion.div
@@ -302,10 +303,23 @@ export default function Projects({ isArabic }: ProjectsProps) {
                   ease: [0.25, 0.1, 0.25, 1],
                   layout: { type: "spring", stiffness: 300, damping: 30 }
                 }}
-                className="flex flex-col h-full w-full rounded-2xl overflow-hidden border border-[#26336D]/10 bg-white shadow-md transition-shadow duration-300 hover:shadow-lg cursor-pointer"
+                onHoverStart={() => setHoveredCard(project.id)}
+                onHoverEnd={() => setHoveredCard(null)}
+                onViewportEnter={() => {
+                  if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
+                    setHoveredCard(project.id);
+                  }
+                }}
+                onViewportLeave={() => {
+                  if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
+                    if (hoveredCard === project.id) setHoveredCard(null);
+                  }
+                }}
+                viewport={{ margin: "-30% 0px -30% 0px", amount: 0.3 }}
+                className="project-card group flex flex-col h-full w-full rounded-2xl overflow-hidden border border-[#26336D]/10 bg-white shadow-md transition-all duration-500 cursor-pointer hover:shadow-[0_0_25px_rgba(201,168,76,0.3),0_8px_30px_rgba(0,0,0,0.08)]"
               >
                 {/* High Quality Image Container */}
-                <div className="relative w-full h-[260px] overflow-hidden bg-[#26336D]/5 flex-shrink-0">
+                <div className="relative w-full h-[220px] sm:h-[260px] overflow-hidden bg-[#26336D]/5 flex-shrink-0">
                   <Image
                     src={project.image}
                     alt={isArabic ? project.titleAr : project.title}
@@ -316,34 +330,47 @@ export default function Projects({ isArabic }: ProjectsProps) {
                     unoptimized
                   />
 
-                  {/* 45 Degree Corner Ribbon */}
-                  <div className={cn(
-                    "absolute top-6 py-1.5 w-[160px] bg-[#AB953F] text-white text-[10px] font-heading font-bold uppercase tracking-widest text-center shadow-md z-20",
-                    isArabic 
-                      ? "-left-12 -rotate-45" 
-                      : "-right-12 rotate-45"
-                  )}>
-                    {category === "completed"
-                      ? (isArabic ? "مكتمل" : "Completed")
-                      : (isArabic ? "قيد التنفيذ" : "Ongoing")}
-                  </div>
+                  {/* Status Badge - Top Right Sash Ribbon */}
+                  <AnimatePresence>
+                    {hoveredCard === project.id && (
+                      <motion.div
+                        initial={{ y: -60, x: 0 }}
+                        animate={{ y: 0, x: 0 }}
+                        exit={{ y: 0, x: 120, transition: { duration: 0.3, ease: "easeIn" } }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                        className={cn(
+                          "absolute top-5 -right-12 w-40 h-8 flex items-center justify-center shadow-md z-20",
+                          "rotate-45 project-card-ribbon",
+                          category === "completed"
+                            ? "bg-[#C9A84C]"
+                            : "bg-[#C9A84C]"
+                        )}
+                      >
+                        <span className="text-white text-[10px] font-heading font-bold uppercase tracking-widest w-full text-center block">
+                          {category === "completed"
+                            ? (isArabic ? "مكتمل" : "COMPLETED")
+                            : (isArabic ? "قيد التنفيذ" : "ONGOING")}
+                        </span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 {/* Card Content - Permanently Visible & Highly Readable */}
-                <div className="p-6 flex flex-col flex-1 bg-white">
+                <div className="p-4 sm:p-6 flex flex-col flex-1 bg-white">
                   {/* Location label */}
-                  <span className="text-[11px] font-heading font-semibold text-[#AB953F] uppercase tracking-widest block mb-2">
+                  <span className="text-[10px] sm:text-[11px] font-heading font-semibold text-[#C9A84C] uppercase tracking-widest block mb-2">
                     📍 {isArabic ? project.locationAr : project.location}
                   </span>
                   
-                  {/* Title */}
-                  <h3 className="font-heading text-xl font-bold text-[#26336D] mb-3 leading-snug">
+                  {/* Title - Now in golden color for emphasis */}
+                  <h3 className="font-heading text-lg sm:text-xl font-bold text-[#C9A84C] mb-3 leading-snug">
                     {isArabic ? project.titleAr : project.title}
                   </h3>
 
                   {/* Scope details */}
-                  <div className="border-t border-[#26336D]/10 pt-4 mt-auto">
-                    <p className="text-[#26336D]/70 font-light text-sm leading-relaxed line-clamp-3">
+                  <div className="border-t border-[#26336D]/10 pt-3 sm:pt-4 mt-auto">
+                    <p className="text-[#26336D]/70 font-light text-xs sm:text-sm leading-relaxed line-clamp-3">
                       {isArabic ? project.scopeAr : project.scope}
                     </p>
                   </div>
@@ -356,46 +383,46 @@ export default function Projects({ isArabic }: ProjectsProps) {
         {/* Counters & Milestones panel */}
         <div
           ref={metricsRef}
-          className="mt-24 sm:mt-32 bg-white border border-[#AB953F]/10 rounded-3xl p-10 sm:p-16 shadow-2xl relative overflow-hidden grid grid-cols-1 md:grid-cols-3 gap-12 text-center"
+          className="mt-16 sm:mt-24 lg:mt-32 bg-white border border-[#C9A84C]/10 rounded-3xl p-8 sm:p-10 lg:p-16 shadow-2xl relative overflow-hidden grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 text-center"
         >
           {/* Radial light */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#AB953F]/5 via-transparent to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#C9A84C]/5 via-transparent to-transparent pointer-events-none" />
 
           {/* Metric 1 */}
           <div className="flex flex-col items-center relative z-10 group">
-            <span className="block font-heading text-6xl sm:text-7xl font-extrabold text-[#26336D] mb-3 transition-colors duration-500 group-hover:text-[#AB953F]">
+            <span className="block font-heading text-5xl sm:text-6xl lg:text-7xl font-extrabold text-[#26336D] mb-3 transition-colors duration-500 group-hover:text-[#C9A84C]">
               {yearsCount}+
             </span>
-            <span className="text-xs font-heading font-bold tracking-widest text-[#AB953F] uppercase">
+            <span className="text-[10px] sm:text-xs font-heading font-bold tracking-widest text-[#C9A84C] uppercase">
               {isArabic ? "عاماً من التميز بالجبيل" : "Years of Heritage in Jubail"}
             </span>
-            <span className="text-[11px] text-[#26336D]/50 mt-2 font-medium block">
+            <span className="text-[10px] sm:text-[11px] text-[#26336D]/50 mt-2 font-medium block">
               {isArabic ? "منذ التأسيس عام ١٤٣٥ هـ" : "Established since 1435 H"}
             </span>
           </div>
 
           {/* Metric 2 */}
           <div className="flex flex-col items-center relative z-10 md:border-x md:border-[#26336D]/10 group">
-            <span className="block font-heading text-6xl sm:text-7xl font-extrabold text-[#26336D] mb-3 transition-colors duration-500 group-hover:text-[#AB953F]">
+            <span className="block font-heading text-5xl sm:text-6xl lg:text-7xl font-extrabold text-[#26336D] mb-3 transition-colors duration-500 group-hover:text-[#C9A84C]">
               {staffCount}+
             </span>
-            <span className="text-xs font-heading font-bold tracking-widest text-[#AB953F] uppercase">
+            <span className="text-[10px] sm:text-xs font-heading font-bold tracking-widest text-[#C9A84C] uppercase">
               {isArabic ? "حرفياً ومهندساً متخصصاً" : "Expert Engineers & Artisans"}
             </span>
-            <span className="text-[11px] text-[#26336D]/50 mt-2 font-medium block">
+            <span className="text-[10px] sm:text-[11px] text-[#26336D]/50 mt-2 font-medium block">
               {isArabic ? "قوة عاملة استثنائية متكاملة" : "Highly Skilled Elite Workforce"}
             </span>
           </div>
 
           {/* Metric 3 */}
           <div className="flex flex-col items-center relative z-10 group">
-            <span className="block font-heading text-6xl sm:text-7xl font-extrabold text-[#26336D] mb-3 transition-colors duration-500 group-hover:text-[#AB953F]">
+            <span className="block font-heading text-5xl sm:text-6xl lg:text-7xl font-extrabold text-[#26336D] mb-3 transition-colors duration-500 group-hover:text-[#C9A84C]">
               {projectsCount}+
             </span>
-            <span className="text-xs font-heading font-bold tracking-widest text-[#AB953F] uppercase">
+            <span className="text-[10px] sm:text-xs font-heading font-bold tracking-widest text-[#C9A84C] uppercase">
               {isArabic ? "مشروعاً ناجحاً مكتملاً" : "Completed Projects Ledger"}
             </span>
-            <span className="text-[11px] text-[#26336D]/50 mt-2 font-medium block">
+            <span className="text-[10px] sm:text-[11px] text-[#26336D]/50 mt-2 font-medium block">
               {isArabic ? "بدقة هندسية مطلقة ١٠٠٪" : "Engineered with 100% Precision"}
             </span>
           </div>

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #AB953F;
+  --color-primary: #C9A84C;
   --color-accent: #26336D;
   --color-cream: #FBFBFA;
   --color-charcoal: #26336D;
@@ -47,12 +47,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #AB953F;
+  background: #C9A84C;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #907C30;
+  background: #B8963A;
 }
 
 /* Selection Highlight */
@@ -73,10 +73,25 @@ body {
   bottom: -4px;
   width: 40px;
   height: 2px;
-  background-color: #AB953F;
+  background-color: #C9A84C;
   transition: width 0.3s ease;
 }
 
 .text-underline-gold:hover::after {
   width: 80px;
+}
+
+/* Mobile touch-friendly hover simulation via IntersectionObserver (applied via JS) */
+@media (hover: none) and (pointer: coarse) {
+  .project-card .ribbon-badge {
+    opacity: 0 !important;
+    transform: scale(0.8) !important;
+  }
+  .project-card.in-view .ribbon-badge {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+  }
+  .project-card.in-view {
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.25), 0 4px 20px rgba(0,0,0,0.08) !important;
+  }
 }

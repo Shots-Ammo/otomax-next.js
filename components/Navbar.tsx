@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface NavbarProps {
   isArabic: boolean;
@@ -47,32 +48,21 @@ export default function Navbar({ isArabic, setIsArabic }: NavbarProps) {
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           {/* Logo Brand */}
           <a href="#home" className="flex items-center gap-3 group">
-            <motion.div
-              whileHover={{ rotate: 45, scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300, damping: 15 }}
-              className="w-10 h-10 border border-primary bg-primary/10 flex items-center justify-center relative overflow-hidden"
-              style={{ transform: "rotate(45deg)" }}
-            >
-              {/* Tilted Geometric SVG Labyrinth Pattern inside */}
-              <svg
-                viewBox="0 0 100 100"
-                className="w-6 h-6 text-primary group-hover:text-accent transition-colors duration-300"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="8"
-                style={{ transform: "rotate(-45deg)" }}
-              >
-                <path d="M10,10 L90,10 L90,90 L10,90 Z" />
-                <path d="M30,30 L70,30 L70,70 L30,70 Z" />
-                <path d="M50,10 L50,90" />
-                <path d="M10,50 L90,50" />
-              </svg>
-            </motion.div>
-            <div className="flex flex-col text-left">
-              <span className="font-heading font-semibold text-lg tracking-wider leading-none text-primary transition-colors">
+            <div className="relative w-12 h-12 sm:w-14 sm:h-14 flex-shrink-0">
+              <Image
+                src="/gulf_logo.png"
+                alt="Gulf Evento Logo"
+                fill
+                className="object-contain"
+                priority
+                unoptimized
+              />
+            </div>
+            <div className={`flex flex-col ${isArabic ? "text-right" : "text-left"}`}>
+              <span className="font-heading font-semibold text-base sm:text-lg tracking-wider leading-none text-primary">
                 GULF EVENTO
               </span>
-              <span className="text-[9px] font-heading tracking-widest text-accent font-medium mt-0.5 uppercase">
+              <span className="text-[8px] sm:text-[9px] font-heading tracking-widest text-accent font-medium mt-0.5 uppercase">
                 Contracting Company
               </span>
             </div>
@@ -96,28 +86,19 @@ export default function Navbar({ isArabic, setIsArabic }: NavbarProps) {
           </div>
 
           {/* Action Tools */}
-          <div className="hidden md:flex items-center gap-4">
-            {/* Call button */}
-            <a
-              href="tel:0136647813"
-              className="flex items-center gap-2 border bg-primary border-primary text-cream text-xs tracking-wider uppercase font-semibold px-4 py-2 transition-all duration-300 hover:bg-transparent hover:text-accent hover:border-accent"
-            >
-              <Phone size={13} />
-              {isArabic ? "اتصل" : "Call Now"}
-            </a>
-
+          <div className="hidden md:flex items-center gap-8">
             {/* Language pill toggle */}
             <button
               onClick={() => setIsArabic(!isArabic)}
               aria-label="Toggle Language"
-              className="relative flex items-center h-8 rounded-full bg-charcoal/8 border border-charcoal/15 p-0.5 cursor-pointer select-none shadow-inner"
+              className="relative flex items-center h-8 rounded-full bg-[#26336D]/8 border border-[#26336D]/15 p-0.5 cursor-pointer select-none shadow-inner"
               style={{ width: "120px", direction: "ltr" }}
             >
               {/* Sliding pill indicator */}
               <motion.span
                 animate={{ x: isArabic ? 60 : 0 }}
                 transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                className="absolute top-0.5 bottom-0.5 left-0.5 w-[56px] rounded-full bg-primary shadow-md z-10"
+                className="absolute top-0.5 bottom-0.5 left-0.5 w-[56px] rounded-full bg-[#C9A84C] shadow-md z-10"
               />
               {/* English half */}
               <span
@@ -134,6 +115,15 @@ export default function Navbar({ isArabic, setIsArabic }: NavbarProps) {
                 عربي
               </span>
             </button>
+
+            {/* Call button */}
+            <a
+              href="tel:0136647813"
+              className="flex items-center gap-2 border bg-[#C9A84C] border-[#C9A84C] text-[#FBFBFA] text-xs tracking-wider uppercase font-semibold px-4 py-2 transition-all duration-300 hover:bg-transparent hover:text-[#26336D] hover:border-[#26336D]"
+            >
+              <Phone size={13} />
+              {isArabic ? "اتصل" : "Call Now"}
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -142,13 +132,13 @@ export default function Navbar({ isArabic, setIsArabic }: NavbarProps) {
             <button
               onClick={() => setIsArabic(!isArabic)}
               aria-label="Toggle Language"
-              className="relative flex items-center h-7 rounded-full bg-charcoal/8 border border-charcoal/15 p-0.5 cursor-pointer select-none shadow-inner"
+              className="relative flex items-center h-7 rounded-full bg-[#26336D]/8 border border-[#26336D]/15 p-0.5 cursor-pointer select-none shadow-inner"
               style={{ width: "104px", direction: "ltr" }}
             >
               <motion.span
                 animate={{ x: isArabic ? 52 : 0 }}
                 transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                className="absolute top-0.5 bottom-0.5 left-0.5 w-[48px] rounded-full bg-primary shadow-md z-10"
+                className="absolute top-0.5 bottom-0.5 left-0.5 w-[48px] rounded-full bg-[#C9A84C] shadow-md z-10"
               />
               <span
                 className="relative z-20 flex-1 text-center text-[9px] font-heading font-bold tracking-wider uppercase transition-colors duration-300"
