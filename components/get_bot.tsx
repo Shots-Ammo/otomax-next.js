@@ -32,6 +32,7 @@ const CONFIG = {
         placeholder: "Type your message here...",
         poweredBy: "Powered by",
         errorMsg: "⚠️ Couldn't reach the server. Please try again.",
+        welcomeBubble: "Hi, I am your smart assistant, do you need anything?",
         consentPart1: "By chatting with our chat agents you consent to the monitoring and recording of the chat and the processing of your personal data in accordance with our ",
         consentLink: "Privacy Policy",
         consentPart2: ".",
@@ -43,6 +44,7 @@ const CONFIG = {
         placeholder: "اكتب رسالتك هنا...",
         poweredBy: "مشغّل بواسطة",
         errorMsg: "⚠️ تعذّر الوصول إلى الخادم. يرجى المحاولة مجدداً.",
+        welcomeBubble: "مرحباً، أنا مساعدك الذكي، هل تحتاج إلى شيء؟",
         consentPart1: "من خلال الدردشة مع وكلائنا، فإنك توافق على مراقبة وتسجيل الدردشة ومعالجة بياناتك الشخصية وفقًا لـ ",
         consentLink: "سياسة الخصوصية",
         consentPart2: " الخاصة بنا.",
@@ -90,6 +92,8 @@ export default function Noura() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [showBadge, setShowBadge] = useState(false);
+  const [showWelcomeBubble, setShowWelcomeBubble] = useState(false);
+  const [suppressWelcomeBubble, setSuppressWelcomeBubble] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -121,13 +125,16 @@ export default function Noura() {
     }
     sessionIdRef.current = sessId;
 
-    // Notification logic
+    // Welcome bubble logic: show once after 3s if user hasn't opened the widget
     const timer = setTimeout(() => {
-      if (!isOpen) setShowBadge(true);
+      console.log("get_bot: welcome timer fired", { isOpen, suppressWelcomeBubble });
+      if (!isOpen && !suppressWelcomeBubble) {
+        setShowWelcomeBubble(true);
+      }
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [isOpen]);
+  }, [isOpen, suppressWelcomeBubble]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -252,9 +259,33 @@ export default function Noura() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[10001] font-sans">
-      {/* Launcher */}
-      <motion.button
+    <>
+      {/* Welcome bubble (appears once after 3s if no interaction) */}
+      <AnimatePresence>
+        {showWelcomeBubble && !isOpen && !suppressWelcomeBubble && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 16 }}
+            transition={{ duration: 0.35 }}
+            onClick={() => {
+              console.log("get_bot: welcome bubble clicked");
+              setIsOpen(true);
+              setShowWelcomeBubble(false);
+              setSuppressWelcomeBubble(true);
+              setShowBadge(false);
+            }}
+            className="fixed bottom-28 right-6 w-[260px] sm:w-[300px] bg-white border border-[#E9E0B9] rounded-2xl p-3 shadow-2xl flex items-start gap-3 cursor-pointer z-[10002]"
+          >
+            <div className="w-10 h-10 rounded-full bg-[#C9A84C] flex items-center justify-center text-white font-bold text-sm flex-shrink-0">G</div>
+            <div className="text-sm text-[#26336D]">{T.welcomeBubble}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="fixed bottom-6 right-6 z-[10001] font-sans">
+        {/* Launcher */}
+        <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         animate={{
@@ -272,7 +303,12 @@ export default function Noura() {
           }
         }}
         onClick={() => {
-          setIsOpen(!isOpen);
+          console.log("get_bot: launcher clicked", { isOpen });
+          const newOpen = !isOpen;
+          // Any explicit user interaction should suppress the welcome bubble for this page load
+          setSuppressWelcomeBubble(true);
+          setShowWelcomeBubble(false);
+          setIsOpen(newOpen);
           setShowBadge(false);
         }}
         className={cn(
@@ -491,5 +527,6 @@ export default function Noura() {
         )}
       </AnimatePresence>
     </div>
+    </>
   );
 }
