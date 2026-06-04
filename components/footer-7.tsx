@@ -2,6 +2,8 @@
 import React from "react";
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 
+
+
 interface Footer7Props {
   logo?: {
     url: string;
@@ -34,7 +36,7 @@ export const Footer7 = ({
     url: "https://www.otomax.tech",
     src: "/otomax_logo.png",
     alt: "Otomax Logo",
-    title: "otomax.tech",
+    title: "Otomax",
   },
 }: {
   logo?: {
@@ -52,15 +54,12 @@ export const Footer7 = ({
       links: [
         { name: t("aiAgent"), href: "/ai-agent" },
         { name: t("websites"), href: "/websites" },
-
-        { name: t("crm"), href: "/crm" },
-        { name: t("consultation"), href: "/consultation" },
+        { name: t("What we can do"), href: "/consultation" },
       ],
     },
     {
       title: t("otomax"),
       links: [
-        { name: t("partnerships"), href: "/partnerships" },
         { name: t("privacyPolicy"), href: "/privacy" },
         { name: t("termsAndConditions"), href: "/terms" },
       ],
@@ -116,7 +115,7 @@ export const Footer7 = ({
           </div>
           
           <div className="mt-20 pt-8 border-t border-neutral-50 flex flex-col md:flex-row justify-between items-center gap-6 text-sm font-bold text-neutral-400">
-            <p>© {new Date().getFullYear()} {logo.title}. {t("allRightsReserved")}</p>
+            
             <div className="flex items-center gap-8">
               {legalLinks.map((link, idx) => (
                 <Link key={idx} href={link.href as any} className="hover:text-neutral-900 transition-colors">

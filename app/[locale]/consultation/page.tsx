@@ -9,7 +9,7 @@ import {
 import NavBar from "@/components/ui/navBar";
 import { Footer7 } from "@/components/footer-7";
 import Noura from "@/components/Noura";
-import { ConsultationOnboardingModal } from "@/components/consultation-onboarding-modal";
+
 import { motion, useInView } from "framer-motion";
 import RadarOrbitalTimeline, { type TimelineItem } from "@/components/RadarOrbitalTimeline";
 import {
@@ -337,20 +337,7 @@ export default function ConsultationPage() {
               </motion.h1>
             </div>
 
-            {/* Standalone Button */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="flex flex-wrap justify-center gap-4"
-            >
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="inline-flex items-center gap-2 px-10 py-5 bg-[#7B2FFF] text-white rounded-full font-bold shadow-xl shadow-violet-500/20 hover:scale-105 transition-transform text-lg"
-              >
-                {t("hero.button")}
-              </button>
-            </motion.div>
+           
           </div>
         </section>
 
@@ -563,27 +550,14 @@ export default function ConsultationPage() {
             </div>
           </div>
 
-          {/* Final CTA */}
-          <div className="bg-violet-600 rounded-3xl p-10 flex flex-col md:flex-row items-center justify-between gap-8 text-white shadow-2xl shadow-violet-200">
-            <div className="space-y-2 text-center md:text-start">
-              <h3 className="text-2xl font-black tracking-tight">{tA("cta.title")}</h3>
-              <p className="text-violet-100 font-medium">{tA("cta.subtitle")}</p>
-            </div>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="px-8 py-4 bg-white text-violet-600 rounded-2xl font-bold flex items-center gap-3 hover:bg-violet-50 transition-colors shadow-lg"
-            >
-              {tA("cta.button")}
-            </button>
-          </div>
-
+          
         </section>
 
 
 
         <Footer7 />
         <Noura />
-        <ConsultationOnboardingModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+       
       </main>
     );
   }

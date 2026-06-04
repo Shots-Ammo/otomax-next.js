@@ -409,11 +409,11 @@ const Contact = () => {
                                                     >
                                                         <option value="">{t("form.servicePlaceholder")}</option>
                                                         <option value="agent">{t("form.services.agent")}</option>
-                                                        <option value="crm">{t("form.services.crm")}</option>
+                                                       
 
                                                         <option value="website">{t("form.services.website")}</option>
-                                                        <option value="partnership">{t("form.services.partnership")}</option>
-                                                        <option value="consultation">{t("form.services.consultation")}</option>
+                                                      
+                                                       
                                                         <option value="Other">{t("form.services.other")}</option>
                                                     </select>
                                                     <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />

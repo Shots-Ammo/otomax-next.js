@@ -29,7 +29,6 @@ const NavBar = () => {
     { name: t("home"), href: "/" },
     { name: t("aiAgent"), href: "/#agent" },
     { name: t("services"), href: "/#services" },
-    { name: t("partnerships"), href: "/partnerships" },
     { name: t("contactUs"), href: "/#contact" },
   ];
 
@@ -72,12 +71,7 @@ const NavBar = () => {
           {/* Actions: Language + CTA */}
           <div className="flex items-center gap-2 md:gap-4">
             <LanguageToggle />
-            <Link
-              href="/consultation"
-              className="hidden md:flex bg-violet-600 text-white px-6 py-2.5 rounded-full font-bold text-base hover:bg-violet-500 hover:scale-105 transition-all duration-300 shadow-md hover:shadow-violet-200"
-            >
-              {t("bookConsultation")}
-            </Link>
+            
           </div>
         </nav>
 

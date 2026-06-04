@@ -38,7 +38,6 @@ const CONFIG = {
       botSubtitle: "Smart Assistant",
       greeting: "Hello! I am Nourah. How may I assist you today?",
       placeholder: "Type your message here...",
-      poweredBy: "Powered by",
       errorMsg: "⚠️ Couldn't reach the server. Please try again.",
       consentPart1: "By chatting with our chat agents you consent to the monitoring and recording of the chat and the processing of your personal data in accordance with our ",
       consentLink: "Privacy Policy",
@@ -49,7 +48,6 @@ const CONFIG = {
       botSubtitle: "المساعده الذكية",
       greeting: "مرحباً! معك نوره. كيف يمكنني مساعدتك اليوم؟",
       placeholder: "اكتب رسالتك هنا...",
-      poweredBy: "مشغّل بواسطة",
       errorMsg: "⚠️ تعذّر الوصول إلى الخادم. يرجى المحاولة مجدداً.",
       consentPart1: "من خلال الدردشة مع وكلائنا، فإنك توافق على مراقبة وتسجيل الدردشة ومعالجة بياناتك الشخصية وفقًا لـ ",
       consentLink: "سياسة الخصوصية",
@@ -737,20 +735,6 @@ export default function Noura() {
               </button>
             </div>
 
-            {/* Footer */}
-            <div className={cn("py-2 text-center", CONFIG.theme.headerBg)}>
-              <p className="text-[10px] text-violet-200/50 tracking-wider">
-                {T.poweredBy}{" "}
-                <a
-                  href="https://otomax.tech"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-violet-200 font-bold hover:text-white transition-colors"
-                >
-                  Otomax
-                </a>
-              </p>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>
