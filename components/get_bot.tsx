@@ -512,15 +512,11 @@ export default function Noura() {
             {/* Footer */}
             <div className={cn("py-2.5 text-center bg-slate-50 border-t border-slate-100")}>
               <p className="text-[10px] text-slate-400 font-medium tracking-wide">
-                {T.poweredBy}{" "}
-                <a
-                  href="https://otomax.tech"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#26336D] font-bold hover:text-[#C9A84C] transition-colors"
+  
+                <span
                 >
-                  Otomax
-                </a>
+                  This is just a demo and not a real active bot. 
+                </span>
               </p>
             </div>
           </motion.div>

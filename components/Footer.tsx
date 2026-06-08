@@ -97,15 +97,19 @@ export default function Footer({ isArabic }: FooterProps) {
       </div>
 
       {/* Under Footer compliance and securings */}
-      <div className="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-accent/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-light text-charcoal/50">
-        <span>
-          © {currentYear} Gulf Evento Contracting Company. All rights reserved.
-        </span>
-       <a href="https://otomax.tech" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-        <span className="flex items-center gap-1.5 uppercase font-medium tracking-widest text-[9px] text-charcoal/60">
-            {isArabic ? "مدعوم بواسطة Otomax" : "Powered by Otomax" }
-          </span>
-      </a> 
+      <div className="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-accent/10 flex justify-center items-center gap-4 text-xs font-light text-charcoal/50">
+        <p className="rounded-full bg-[#F4C760]/20 px-4 py-2 text-charcoal/90 text-center">
+          This is a demo website as a proposal for Gulf Evento Contracting Company (
+          <a
+            href="https://www.gulfevento-contracting.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary font-medium hover:text-secondary"
+          >
+            original website at gulfevento-contracting.com
+          </a>
+          )
+        </p>
       </div>
     </footer>
   );
