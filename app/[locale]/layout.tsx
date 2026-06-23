@@ -42,7 +42,6 @@ export default async function RootLayout({
     >
       <body className="font-sans min-h-full bg-cream text-charcoal flex flex-col">
         {children}
-        <Noura />
       </body>
     </html>
   );
