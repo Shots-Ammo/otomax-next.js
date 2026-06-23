@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit, Inter, Cairo } from "next/font/google";
 import "./globals.css";
-import Noura from '@/components/get_bot';
 
 const outfit = Outfit({
   variable: "--font-outfit",
